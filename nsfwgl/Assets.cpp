@@ -1,5 +1,4 @@
 #include "nsfw.h"
-#include <glbinding/Binding.h>
 
 using namespace nsfw::ASSET;
 

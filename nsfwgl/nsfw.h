@@ -11,26 +11,19 @@
 // http://stackoverflow.com/questions/8487986/file-macro-shows-full-path
 #define __FILENAME__ (strrchr(__FILE__, '\\') ? strrchr(__FILE__, '\\') + 1 : __FILE__)
 
+// stringised version of line number (must be done in two steps)
+#define STRINGISE(N) #N
+#define EXPAND_THEN_STRINGISE(N) STRINGISE(N)
+#define __LINE_STR__ EXPAND_THEN_STRINGISE(__LINE__)
 
+// MSVC-suitable routines for formatting <#pragma message>
+#define __LOC__ __FILE__ "(" __LINE_STR__ ")"
+#define __OUTPUT_FORMAT__(type) __LOC__ " : " type " : "
 
-#ifdef _DEBUG
-#ifdef _BREAK_IT
-#define TODO()	  do{std::cerr << __FILENAME__ << "(" << __LINE__ << ") '" << __FUNCTION__ << "' IS NOT IMPLEMENTED!" << std::endl; assert(false);}while(0)
-#define TODO_D(A) do{std::cerr << __FILENAME__ << "(" << __LINE__ << ") '" << __FUNCTION__ << "' IS NOT IMPLEMENTED!" << std::endl << "  -> " << A << std::endl << std::endl; assert(false);}while(0)
-#else
-#define TODO()	  do{std::cerr << __FILENAME__ << "(" << __LINE__ << ") '" << __FUNCTION__ << "' IS NOT IMPLEMENTED!" << std::endl;}while(0)
-#define TODO_D(A) do{std::cerr << __FILENAME__ << "(" << __LINE__ << ") '" << __FUNCTION__ << "' IS NOT IMPLEMENTED!" << std::endl << "  -> " << A << std::endl << std::endl;}while(0)
-#endif
-
-#ifdef NO_TODO_DETAIL
-#define TODO_D(A) TODO()
-#endif
-
-#elif
-#define TODO()	  do{}while(0)
-#define TODO_D(A) do{}while(0)
-#endif
-
+// specific message types for <#pragma message>
+#define __WARN__ __OUTPUT_FORMAT__("warning")
+#define __ERR__ __OUTPUT_FORMAT__("error")
+#define __MSG__ __OUTPUT_FORMAT__("programmer's message")
 
 #include "Window.h"
 #include "Assets.h"

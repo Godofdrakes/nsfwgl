@@ -5,35 +5,38 @@
 #include "Camera.h"
 #include "Geometry.h"
 
-class GPass : public nsfw::RenderPass
-{
+class GPass : public nsfw::RenderPass {
 
 
-public:	
-	void prep() { TODO_D("glUseProgram, glClear, glBindFrameBuffer, glViewPort, glEnable etc..."); }
-	void post() { TODO_D("Unset any gl settings"); }
+public:
+    void prep() {
+#pragma message ( __ERR__ "glUseProgram, glClear, glBindFrameBuffer, glViewPort, glEnable etc...")
+    }
 
-	GPass(const char *shaderName, const char *fboName) : RenderPass(shaderName, fboName) {}
+    void post() {
+#pragma message ( __ERR__ "Unset any gl settings")
+    }
 
-	void draw(const Camera &c, const Geometry &g)	
-	{
-		setUniform("Projection",	nsfw::UNIFORM::TYPE::MAT4, glm::value_ptr(c.getProjection()));
-		setUniform("View",			nsfw::UNIFORM::TYPE::MAT4, glm::value_ptr(c.getView()));
-		setUniform("Model",			nsfw::UNIFORM::TYPE::MAT4, glm::value_ptr(g.transform));
+    GPass( const char* shaderName, const char* fboName ) : RenderPass( shaderName, fboName ) {}
 
-		setUniform("Diffuse",		nsfw::UNIFORM::TEX2,  g.diffuse,  0);
-		setUniform("Normal",		nsfw::UNIFORM::TEX2,  g.normal,   1);
-		setUniform("Specular",		nsfw::UNIFORM::TEX2,  g.specular, 2);
+    void draw( const Camera& c, const Geometry& g ) {
+        setUniform( "Projection", nsfw::UNIFORM::TYPE::MAT4, glm::value_ptr( c.getProjection() ) );
+        setUniform( "View", nsfw::UNIFORM::TYPE::MAT4, glm::value_ptr( c.getView() ) );
+        setUniform( "Model", nsfw::UNIFORM::TYPE::MAT4, glm::value_ptr( g.transform ) );
 
-		setUniform("SpecularPower", nsfw::UNIFORM::FLO1, (void*)&g.specPower);
+        setUniform( "Diffuse", nsfw::UNIFORM::TEX2, g.diffuse, 0 );
+        setUniform( "Normal", nsfw::UNIFORM::TEX2, g.normal, 1 );
+        setUniform( "Specular", nsfw::UNIFORM::TEX2, g.specular, 2 );
 
-		
-        nsfw::Assets::instance().get(g.mesh);
-        nsfw::Assets::instance().get(g.tris);
+        setUniform( "SpecularPower", nsfw::UNIFORM::FLO1, ( void* )&g.specPower );
+
+
+        nsfw::Assets::instance().get( g.mesh );
+        nsfw::Assets::instance().get( g.tris );
 
         *g.mesh;
         *g.tris;
 
-		TODO_D("bindVAO and Draw Elements!");
-	}
+#pragma message ( __ERR__ "bindVAO and Draw Elements!")
+    }
 };

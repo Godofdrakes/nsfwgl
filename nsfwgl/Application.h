@@ -1,42 +1,50 @@
 #pragma once
 #include "nsfw.h"
 
-namespace nsfw
-{
+namespace nsfw {
 
-	class Application
-	{
-	public:
-		virtual void onInit() { TODO_D("OVERRIDE: Load everything here!"); };
-		virtual void onTerm() { TODO_D("OVERRIDE: Free your data!"); };
-		virtual void onPlay() { TODO_D("OVERRIDE: Setup/reset the game state (or do nothing)!"); };
-		virtual void onStep() { TODO_D("OVERRIDE: Render Passes should draw, objects should update!"); };
+    class Application {
+    public:
+        virtual void onInit() {
+#pragma message ( __ERR__ "OVERRIDE: Load everything here!" )
+        };
 
-		void init(int width = 800, int height = 600, const char *name = "Not Suited For Work")
-		{
-			Window::instance().init(width, height);
-			Assets::instance().init();
-			onInit();
-		}
+        virtual void onTerm() {
+#pragma message ( __ERR__ "OVERRIDE: Free your data!")
+        };
 
-		void term()
-		{
-			onTerm();
-			Assets::instance().term();
-			Window::instance().term();
-		}
+        virtual void onPlay() {
+#pragma message ( __ERR__ "OVERRIDE: Setup/reset the game state (or do nothing)!")
+        };
 
-		void play()
-		{
-			onPlay();
+        virtual void onStep() {
+#pragma message ( __ERR__ "OVERRIDE: Render Passes should draw, objects should update!")
+        };
 
-		do { step(); } while (!Window::instance().getShouldClose());
-		}
+        void init( int width = 800, int height = 600, const char* name = "Not Suited For Work" ) {
+            Window::instance().init( width, height );
+            Assets::instance().init();
+            onInit();
+        }
 
-		void step()
-		{
-			Window::instance().step();
-			onStep();
-		}
-	};
+        void term() {
+            onTerm();
+            Assets::instance().term();
+            Window::instance().term();
+        }
+
+        void play() {
+            onPlay();
+
+            do {
+                step();
+            }
+            while ( !Window::instance().getShouldClose() );
+        }
+
+        void step() {
+            Window::instance().step();
+            onStep();
+        }
+    };
 }

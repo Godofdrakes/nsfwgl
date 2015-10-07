@@ -37,105 +37,134 @@
 		*** Implement the necessary LOAD and MAKE functions, as well as the TERM function.
 */
 
-namespace nsfw
-{
-	// Keep track of the type of handle
-	namespace ASSET
-	{
-		enum GL_HANDLE_TYPE { eNONE, VAO, IBO, VBO, SIZE, FBO, RBO, TEXTURE, SHADER, eSIZE };
-		
-	}
-		
-	extern const char *TYPE_NAMES[];
-	// Use a handle type and name to use as an index for each asset
-	typedef std::pair<ASSET::GL_HANDLE_TYPE, std::string>  AssetKey;
+namespace nsfw {
+    // Keep track of the type of handle
+    namespace ASSET {
+        enum GL_HANDLE_TYPE { eNONE, VAO, IBO, VBO, SIZE, FBO, RBO, TEXTURE, SHADER, eSIZE };
 
-	// for explicitness
-	typedef unsigned GL_HANDLE;
+    }
 
-	// Asset reference object, used to keep a type and name associated with the
-	// manner in which the Assets arranges its keys. This is purely sugar.
-	template <ASSET::GL_HANDLE_TYPE T> struct Asset
-	{
-		const ASSET::GL_HANDLE_TYPE t;
-		std::string name;
-		Asset() : t(T), name("") {}
-		Asset(const char *n) : name(n), t(T) {}								 // construct w/string if desired
-		Asset &operator=(const char *s) { name = s; return *this; }			 // conviently assign strings directly to reference		
-		operator AssetKey() const { return AssetKey(t, name); }				 // for use with Assets::Operator[]
-		GL_HANDLE operator*() const { return Assets::instance()[*this]; } // Overload value-of operator, to dereference
-        const void* operator&() const { return Assets::instance().getUNIFORM(*this); }
-        operator const void*() const { return Assets::instance().getUNIFORM(*this); }
+    extern const char* TYPE_NAMES[];
+    // Use a handle type and name to use as an index for each asset
+    typedef std::pair<ASSET::GL_HANDLE_TYPE,std::string> AssetKey;
+
+    // for explicitness
+    typedef unsigned GL_HANDLE;
+
+    // Asset reference object, used to keep a type and name associated with the
+    // manner in which the Assets arranges its keys. This is purely sugar.
+    template<ASSET::GL_HANDLE_TYPE T>
+    struct Asset {
+        const ASSET::GL_HANDLE_TYPE t;
+        std::string name;
+
+        Asset() : t( T ), name( "" ) {}
+
+        Asset( const char* n ) : name( n ), t( T ) {} // construct w/string if desired
+        Asset& operator=( const char* s ) {
+            name = s;
+            return *this;
+        } // conviently assign strings directly to reference		
+        operator AssetKey() const {
+            return AssetKey( t, name );
+        } // for use with Assets::Operator[]
+        GL_HANDLE operator*() const {
+            return Assets::instance()[*this];
+        } // Overload value-of operator, to dereference
+        const void* operator&() const {
+            return Assets::instance().getUNIFORM( *this );
+        }
+
+        operator const void*() const {
+            return Assets::instance().getUNIFORM( *this );
+        }
     };
 
-	/*
+    /*
 		Asset management singleton. It should be the only place that the glGen**** functions
 		are called, and the only place where glDelete/Destroy/etc. are called. It should
 		serve no other purpose than to provide a concise location where all openGL handles are
 		kept track of and to provide a layer of indirection between objects in the game and
 		the actual asset on the video card.
 	*/
-	class Assets
-	{
-	private:
-		// Hashing functor object for accepting pair<enum,string> as an index.
-		struct Hash { size_t operator()(AssetKey k) const { return std::hash<std::string>()(k.second) + (unsigned)k.first; } };
-		
-		// Store all of our keys in one place!
-		std::unordered_map<AssetKey, GL_HANDLE, Hash> handles;
-		Assets() {}
+    class Assets {
+    private:
+        // Hashing functor object for accepting pair<enum,string> as an index.
+        struct Hash {
+            size_t operator()( AssetKey k ) const {
+                return std::hash<std::string>()( k.second ) + ( unsigned )k.first;
+            }
+        };
 
-		GL_HANDLE getVERIFIED(const AssetKey &key) const;
+        // Store all of our keys in one place!
+        std::unordered_map<AssetKey,GL_HANDLE,Hash> handles;
 
-		bool setINTERNAL(ASSET::GL_HANDLE_TYPE t, char *name, GL_HANDLE handle);
-	public:
-		// Singleton accessor
-		static Assets &instance() { static Assets a; return a; }
+        Assets() {}
 
-		//normal get handle function
-		GL_HANDLE get(ASSET::GL_HANDLE_TYPE t, const char *name)	const { return getVERIFIED(AssetKey(t,name)); }
+        GL_HANDLE getVERIFIED( const AssetKey& key ) const;
 
-		//templated Get,for sexiness
-		template<ASSET::GL_HANDLE_TYPE t>
-		GL_HANDLE get(const char *name)			const { return getVERIFIED(AssetKey(t,name)); }
+        bool setINTERNAL( ASSET::GL_HANDLE_TYPE t, char* name, GL_HANDLE handle );
+    public:
+        // Singleton accessor
+        static Assets& instance() {
+            static Assets a;
+            return a;
+        }
 
-		// Get via the Asset reference, sexier
-		GL_HANDLE get(const AssetKey &key)				const { return getVERIFIED(key); }
+        //normal get handle function
+        GL_HANDLE get( ASSET::GL_HANDLE_TYPE t, const char* name ) const {
+            return getVERIFIED( AssetKey( t, name ) );
+        }
 
-		//Conveniently fetch handle using an Asset object, for even more sexy
-        GL_HANDLE operator[](const AssetKey &key) const { return getVERIFIED(key); }
+        //templated Get,for sexiness
+        template<ASSET::GL_HANDLE_TYPE t>
+        GL_HANDLE get( const char* name ) const {
+            return getVERIFIED( AssetKey( t, name ) );
+        }
 
-        const void *getUNIFORM(const AssetKey &key) { return handles.find(key)._Ptr; }
+        // Get via the Asset reference, sexier
+        GL_HANDLE get( const AssetKey& key ) const {
+            return getVERIFIED( key );
+        }
+
+        //Conveniently fetch handle using an Asset object, for even more sexy
+        GL_HANDLE operator[]( const AssetKey& key ) const {
+            return getVERIFIED( key );
+        }
+
+        const void* getUNIFORM( const AssetKey& key ) {
+            return handles.find( key )._Ptr;
+        }
 
 
-		/////////////////////
-		// Fill these out! //
-		/////////////////////
+        /////////////////////
+        // Fill these out! //
+        /////////////////////
 
-		// Should also allocate for IBO and VBO
-		bool makeVAO(const char *name, const struct Vertex *verts, unsigned vsize, const unsigned *tris, unsigned tsize);
+        // Should also allocate for IBO and VBO
+        bool makeVAO( const char* name, const struct Vertex* verts, unsigned vsize, const unsigned* tris, unsigned tsize );
 
-		// should call makeTexture nTextures number of times
-		bool makeFBO(const char *name, unsigned w, unsigned h, unsigned nTextures, const char *names[], const unsigned depths[]);
+        // should call makeTexture nTextures number of times
+        bool makeFBO( const char* name, unsigned w, unsigned h, unsigned nTextures, const char* names[], const unsigned depths[] );
 
-		// should allocate space for a texture, but not necessarily set its data
-		bool makeTexture(const char *name, unsigned w, unsigned h, unsigned depth, const char *pixels = nullptr);
+        // should allocate space for a texture, but not necessarily set its data
+        bool makeTexture( const char* name, unsigned w, unsigned h, unsigned depth, const char* pixels = nullptr );
 
-		// should load a texture from a file, use makeTexture to alloc, and then copy filedata in
-		bool loadTexture(const char *name, const char *path);
-	
-		// should load a shader from file
-		bool loadShader(const char *name, const char *vpath, const char *fpath);
-	
-		// should load from an FBX, adding assets to the library as they are discovered
-		bool loadFBX(const char *name, const char *path);
+        // should load a texture from a file, use makeTexture to alloc, and then copy filedata in
+        bool loadTexture( const char* name, const char* path );
 
-		// Should load an OBJ from file, adding appropriate assets to the library
-		bool loadOBJ(const char *name, const char *path);
+        // should load a shader from file
+        bool loadShader( const char* name, const char* vpath, const char* fpath );
 
-		//load some default assets
-		void init();
-		// clear out all of the opengl handles!
-		void term();
-	};
+        // should load from an FBX, adding assets to the library as they are discovered
+        bool loadFBX( const char* name, const char* path );
+
+        // Should load an OBJ from file, adding appropriate assets to the library
+        bool loadOBJ( const char* name, const char* path );
+
+        //load some default assets
+        void init();
+        // clear out all of the opengl handles!
+        void term();
+    };
 }

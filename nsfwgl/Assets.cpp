@@ -78,6 +78,8 @@ bool nsfw::Assets::loadShader(const char * name, const char * vpath, const char 
 
 bool nsfw::Assets::loadFBX(const char * name, const char * path)
 {
+	//name/meshName
+	//name/textureName
 	TODO_D("FBX file-loading support needed.\nThis function should call loadTexture and makeVAO internally.\nFBX meshes each have their own name, you may use this to name the meshes as they come in.\nMAKE SURE YOU SUPPORT THE DIFFERENCE BETWEEN FBXVERTEX AND YOUR VERTEX STRUCT!\n");
 	return false;
 }
@@ -95,7 +97,7 @@ void nsfw::Assets::init()
 	setINTERNAL(FBO,"Screen",0);
 	
 	makeVAO("Cube",CubeVerts,24,CubeTris,36);
-	makeVAO("Quad",QuadVerts,4, QuadTris,6);
+	makeVAO("Quad",QuadVerts, 4, QuadTris,6);
 	/*
 	char w[] = { 255,255,255,255 };
 	makeTexture("White", 1, 1, GL_RGB8, w);

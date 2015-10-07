@@ -35,7 +35,7 @@ void DeferredApplication::onInit()
 
 	const char *lpassTextureNames[] = { "LPassColor" };
 	const unsigned lpassDepths[] = { 0 }; // GL_RGB8
-	a.makeFBO("LightPass", w.getWidth(), w.getHeight(), 1, lpassTextureNames, lpassDepths); //
+	a.makeFBO("LightPass", w.getWidth(), w.getHeight(), 1, lpassTextureNames, lpassDepths); 
 
 	// Load Shaders
 	a.loadShader("GeometryPassPhong", "/path/to/gpass/Phong/vertex", "/path/to/gpass/Phong/fragment");
@@ -50,13 +50,13 @@ void DeferredApplication::onInit()
 void DeferredApplication::onPlay()
 {
 	TODO_D("Initialize our scene objects!");
-	m_camera = new Camera;
-	m_light = new LightD;
+	m_camera    = new Camera;
+	m_light     = new LightD;
 	m_soulspear = new Geometry;
 
 	m_camera->lookAt(glm::vec3(10), glm::vec3(0), glm::vec3(0,1,0));
 
-	m_light->color = glm::vec3(1, 1, 1);
+	m_light->color      = glm::vec3(1, 1, 1);
 	m_light->direction = glm::normalize(glm::vec3(1, 1, 0));
 
 	m_soulspear->mesh	   = "Soulspear";
@@ -69,9 +69,9 @@ void DeferredApplication::onPlay()
 
 	TODO_D("Initialize our render passes!");
 
-	m_geometryPass			= new GPass("GeometryPassPhong","GeometryPass");
-	m_directionalLightPass  = new LPassD("LightPassDirectional","LightPass");
-	m_compositePass			= new CPass("CompPass","Screen"); // Screen is defined in nsfw::Assets::init()
+	m_geometryPass			= new GPass ("GeometryPassPhong", "GeometryPass");
+	m_directionalLightPass  = new LPassD("LightPassDirectional", "LightPass");
+	m_compositePass			= new CPass ("CompPass", "Screen"); // Screen is defined in nsfw::Assets::init()
 }
 
 void DeferredApplication::onStep()

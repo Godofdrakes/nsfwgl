@@ -104,6 +104,7 @@ namespace nsfw {
         GL_HANDLE getVERIFIED( const AssetKey& key ) const;
 
         bool setINTERNAL( ASSET::GL_HANDLE_TYPE t, char* name, GL_HANDLE handle );
+
     public:
         // Singleton accessor
         static Assets& instance() {

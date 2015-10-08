@@ -15,11 +15,11 @@ public:
 
 
     void prep() {
-#pragma message ( __ERR__ "glUseProgram, glClear, glBindFrameBuffer, glViewPort, glEnable etc...")
+#pragma message ( __WARN__ "glUseProgram, glClear, glBindFrameBuffer, glViewPort, glEnable etc...")
     }
 
     void post() {
-#pragma message ( __ERR__ "Unset any gl settings")
+#pragma message ( __WARN__ "Unset any gl settings")
     }
 
 
@@ -36,6 +36,6 @@ public:
         unsigned quadVAOHandle = nsfw::Assets::instance().get<nsfw::ASSET::VAO>( "Quad" );
         unsigned quadNumtris = nsfw::Assets::instance().get<nsfw::ASSET::SIZE>( "Quad" );
 
-#pragma message ( __ERR__ "GL BindVAO/DrawElements with quad size and vao")
+#pragma message ( __WARN__ "GL BindVAO/DrawElements with quad size and vao")
     }
 };

@@ -239,15 +239,14 @@ bool nsfw::Assets::loadOBJ( const char* name, const char* path ) {
     {
         using namespace glm;
         string shapeName = name + shapes[n].name;
-        unsigned int vertCount = shapes[n].mesh.positions.size() / 3;
-        Vertex* verts = new Vertex[vertCount];
-        for ( int nn = 0; nn < vertCount; ++nn ) {
+        vector<Vertex> verts( shapes[n].mesh.positions.size() / 3 );
+        for ( int nn = 0; nn < verts.size(); ++nn ) {
             verts[nn].position = vec4( shapes[n].mesh.positions[nn * 3], shapes[n].mesh.positions[nn * 3 + 1], shapes[n].mesh.positions[nn * 3 + 2], 1.0f );
             verts[nn].normal   = vec4( shapes[n].mesh.normals[nn * 3], shapes[n].mesh.normals[nn * 3 + 1], shapes[n].mesh.normals[nn * 3 + 2], 0.0f );
             verts[nn].tangent  = vec4( verts[nn].normal.y, -verts[nn].normal.x, verts[nn].normal.z, 0.0f );
             verts[nn].texCoord = vec2( shapes[n].mesh.texcoords[nn * 2], shapes[n].mesh.texcoords[nn * 2 + 1] );
         }
-        makeVAO( shapeName.c_str(), verts, vertCount, shapes[n].mesh.indices.data(), shapes[n].mesh.indices.size() );
+        makeVAO( shapeName.c_str(), verts.data(), verts.size(), shapes[n].mesh.indices.data(), shapes[n].mesh.indices.size() );
     }
 
     return true;

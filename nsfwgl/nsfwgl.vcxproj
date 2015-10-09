@@ -88,7 +88,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
     <Lib>
-      <AdditionalDependencies>Opengl32.lib;glfw3.lib;glbindingd.lib;</AdditionalDependencies>
+      <AdditionalDependencies>Opengl32.lib;glfw3.lib;glbindingd.lib;FBXfix_d.lib;</AdditionalDependencies>
     </Lib>
     <Lib>
       <AdditionalLibraryDirectories>$(SolutionDir)dep\glfw\src\$(Configuration)\;$(SolutionDir)dep\glbinding\$(Configuration)\</AdditionalLibraryDirectories>
@@ -124,10 +124,10 @@
       <OptimizeReferences>true</OptimizeReferences>
     </Link>
     <Lib>
-      <AdditionalDependencies>Opengl32.lib;glfw3.lib;glbinding.lib;</AdditionalDependencies>
+      <AdditionalDependencies>Opengl32.lib;glfw3.lib;glbinding.lib;FBXfix.lib;</AdditionalDependencies>
     </Lib>
     <Lib>
-      <AdditionalLibraryDirectories>$(SolutionDir)dep\glfw\src\$(Configuration)\;$(SolutionDir)dep\glbinding\$(Configuration)\</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)dep\glfw\src\$(Configuration)\;$(SolutionDir)dep\FBXFile\;$(SolutionDir)dep\glbinding\$(Configuration)\</AdditionalLibraryDirectories>
     </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">

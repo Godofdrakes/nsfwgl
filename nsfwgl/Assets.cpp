@@ -214,9 +214,28 @@ bool nsfw::Assets::loadFBX( const char* name, const char* path ) {
         return false;
     }
 
-    // fbx stuff
+    for ( int n = 0; n < fbx_file.getMeshCount(); ++n ) {
+        FBXMeshNode* mesh = fbx_file.getMeshByIndex( n );
+        string meshName = name + mesh->m_name;
+        vector<Vertex> verts( mesh->m_vertices.size() );
+        for ( int nn = 0; n < verts.size(); ++nn ) {
+            verts[nn].position = mesh->m_vertices[nn].position;
+            verts[nn].normal = mesh->m_vertices[nn].normal;
+            verts[nn].tangent = mesh->m_vertices[nn].tangent;
+            verts[nn].texCoord = mesh->m_vertices[nn].texCoord1;
+        }
+        makeVAO( meshName.c_str(), verts.data(), verts.size(), mesh->m_indices.data(), mesh->m_indices.size() );
+    }
 
-    return false;
+    for ( int n = 0; n < fbx_file.getTextureCount(); ++n ) {
+        FBXTexture* texture = fbx_file.getTextureByIndex( n );
+        string textureName = name + texture->name;
+        makeTexture( textureName.c_str(), texture->width, texture->height, texture->format, (char*)texture->data );
+    }
+
+    fbx_file.unload();
+
+    return true;
 }
 
 bool nsfw::Assets::loadOBJ( const char* name, const char* path ) {

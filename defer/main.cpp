@@ -45,7 +45,7 @@ void DeferredApplication::onInit() {
 }
 
 void DeferredApplication::onPlay() {
-#pragma message ( __ERR__ "Initialize our scene objects!")
+#pragma message ( __WARN__ "Initialize our scene objects!")
     m_camera = new Camera;
     m_light = new LightD;
     m_soulspear = new Geometry;
@@ -63,7 +63,7 @@ void DeferredApplication::onPlay() {
     m_soulspear->specPower = 40.0f;
     m_soulspear->transform = mat4( 1 );
 
-#pragma message ( __ERR__ "Initialize our render passes!")
+#pragma message ( __WARN__ "Initialize our render passes!")
 
     m_geometryPass = new GPass( "GeometryPassPhong", "GeometryPass" );
     m_directionalLightPass = new LPassD( "LightPassDirectional", "LightPass" );
@@ -71,12 +71,12 @@ void DeferredApplication::onPlay() {
 }
 
 void DeferredApplication::onStep() {
-#pragma message ( __ERR__ "Update our game objects-- IF THEY EVEN DO ANYTHING")
+#pragma message ( __WARN__ "Update our game objects-- IF THEY EVEN DO ANYTHING")
     m_light->update();
     m_camera->update();
     m_soulspear->update();
 
-#pragma message ( __ERR__ "Draw all of our renderpasses!")
+#pragma message ( __WARN__ "Draw all of our renderpasses!")
     m_geometryPass->prep();
     m_geometryPass->draw( *m_camera, *m_soulspear );
     m_geometryPass->post();

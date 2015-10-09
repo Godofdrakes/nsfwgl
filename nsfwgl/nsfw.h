@@ -4,8 +4,11 @@
 #include <cstring>
 #include <cassert>
 
+#define STB_IMAGE_IMPLEMENTATION
+#define GLBINDING_STATIC
 #define GLM_FORCE_PURE
 #define GLM_SWIZZLE
+#define GLFW_INCLUDE_NONE
 
 //this garbage needs to come before the includes below
 // http://stackoverflow.com/questions/8487986/file-macro-shows-full-path

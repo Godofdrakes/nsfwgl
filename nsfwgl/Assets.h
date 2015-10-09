@@ -104,6 +104,7 @@ namespace nsfw {
         GL_HANDLE getVERIFIED( const AssetKey& key ) const;
 
         bool setINTERNAL( ASSET::GL_HANDLE_TYPE t, char* name, GL_HANDLE handle );
+
     public:
         // Singleton accessor
         static Assets& instance() {
@@ -161,6 +162,12 @@ namespace nsfw {
 
         // Should load an OBJ from file, adding appropriate assets to the library
         bool loadOBJ( const char* name, const char* path );
+
+        // Checks a file exists
+        bool fileExists( const char* path );
+
+        // Loads all text from selected file at path into fileContent
+        bool loadText( std::string& fileContent, const char* path );
 
         //load some default assets
         void init();

@@ -10,11 +10,11 @@ class GPass : public nsfw::RenderPass {
 
 public:
     void prep() {
-#pragma message ( __ERR__ "glUseProgram, glClear, glBindFrameBuffer, glViewPort, glEnable etc...")
+#pragma message ( __WARN__ "glUseProgram, glClear, glBindFrameBuffer, glViewPort, glEnable etc...")
     }
 
     void post() {
-#pragma message ( __ERR__ "Unset any gl settings")
+#pragma message ( __WARN__ "Unset any gl settings")
     }
 
     GPass( const char* shaderName, const char* fboName ) : RenderPass( shaderName, fboName ) {}
@@ -37,6 +37,6 @@ public:
         *g.mesh;
         *g.tris;
 
-#pragma message ( __ERR__ "bindVAO and Draw Elements!")
+#pragma message ( __WARN__ "bindVAO and Draw Elements!")
     }
 };

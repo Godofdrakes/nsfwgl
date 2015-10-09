@@ -11,12 +11,13 @@ No OpenGL!!!
 
 #include <glm/glm.hpp>
 
+struct GLFWwindow;
 namespace nsfw {
     class Window {
-        class GLFWWindow* window;
+        GLFWwindow* window;
         unsigned width, height; // keep track of width height- needed for glViewport FBO integration
 
-        Window():window( nullptr ),width( 0 ),height( 0 ) {}
+        Window() : window( nullptr ), width( 0 ), height( 0 ) {}
 
     public:
         static Window& instance() {

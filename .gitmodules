@@ -1,6 +1,9 @@
 [submodule "dep/glfw"]
 	path = dep/glfw
 	url = https://github.com/glfw/glfw.git
+[submodule "dep/stb"]
+	path = dep/stb
+	url = https://github.com/nothings/stb.git
 [submodule "dep/glbinding"]
 	path = dep/glbinding
 	url = https://github.com/cginternals/glbinding.git

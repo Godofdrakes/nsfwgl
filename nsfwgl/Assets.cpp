@@ -76,36 +76,34 @@ bool nsfw::Assets::makeVAO( const char* name, const Vertex* verts, unsigned vsiz
     return vao != 0 && vbo != 0 && ibo != 0 && size != 0;
 }
 
+// If used, GL_DEPTH_COMPONENT must be the last item in depths[]
 bool nsfw::Assets::makeFBO( const char* name, unsigned w, unsigned h, unsigned nTextures, const char* names[], const unsigned depths[] ) {
 #pragma message ( __WARN__ "Create an FBO! Array parameters are for the render targets, which this function should also generate!\nuse makeTexture.\nNOTE THAT THERE IS NO FUNCTION SETUP FOR MAKING RENDER BUFFER OBJECTS.")
     ASSET_LOG(GL_HANDLE_TYPE::FBO);
     using namespace gl;
+
+    GLint maxBuffers; 
+    glGetIntegerv( GL_MAX_COLOR_ATTACHMENTS, &maxBuffers );
+    std::vector<GLenum> drawBuffers( maxBuffers );
+    for ( int n = 0; n < drawBuffers.size(); ++n ) { drawBuffers[n] = GLenum::GL_COLOR_ATTACHMENT0 + n; }
     
     GLuint frameBuffer = 0;
     glGenFramebuffers( 1, &frameBuffer );
     handles[AssetKey( GL_HANDLE_TYPE::FBO, name )] = frameBuffer;
     glBindFramebuffer( GL_FRAMEBUFFER, frameBuffer );
 
+    GLuint bufferCount = 0;
     for ( unsigned int n = 0; n < nTextures; ++n ) {
         makeTexture( names[n], w, h, depths[n] );
-
-        GLuint depthBuffer = 0;
-        glGenRenderbuffers( 1, &depthBuffer );
-        handles[AssetKey( GL_HANDLE_TYPE::RBO, names[n] )] = depthBuffer;
-        glBindRenderbuffer( GL_RENDERBUFFER, depthBuffer );
-        glRenderbufferStorage( GL_RENDERBUFFER, GL_DEPTH_COMPONENT, w, h );
-        glFramebufferRenderbuffer( GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, depthBuffer );
-
-        glFramebufferTexture( GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, handles[AssetKey( GL_HANDLE_TYPE::TEXTURE, name )], 0 );
-        GLenum drawBuffers[] = { GL_COLOR_ATTACHMENT0 };
-        glDrawBuffers( 1, drawBuffers );
-
-        bool isError = glCheckFramebufferStatus( GL_FRAMEBUFFER ) != GL_FRAMEBUFFER_COMPLETE;
-
-        glBindRenderbuffer( GL_RENDERBUFFER, 0 );
-
-        assert( !isError );
+        glFramebufferTexture2D( GL_FRAMEBUFFER,
+                                ( depths[n] == GL_DEPTH_COMPONENT ) ? GL_DEPTH_ATTACHMENT : ( GL_COLOR_ATTACHMENT0 + bufferCount++ ),
+                                GL_TEXTURE_2D,
+                                get( TEXTURE, names[n] ),
+                                0 );
     }
+    glDrawBuffers( bufferCount, drawBuffers.data() );
+
+    assert( glCheckFramebufferStatus( GLenum::GL_FRAMEBUFFER ) == GLenum::GL_FRAMEBUFFER_COMPLETE );
 
     glBindFramebuffer( GL_FRAMEBUFFER, 0 );
     return true;
@@ -120,7 +118,7 @@ bool nsfw::Assets::makeTexture( const char* name, unsigned w, unsigned h, unsign
     handles[AssetKey( GL_HANDLE_TYPE::TEXTURE, name )] = tex;
     glBindTexture( GLenum::GL_TEXTURE_2D, tex );
     glTexImage2D( GLenum::GL_TEXTURE_2D, 0, depth, w, h, 0, (GLenum)depth, GLenum::GL_UNSIGNED_BYTE, pixels );
-    glTexParameteri( GL_TEXTURE_2D, GLenum::GL_TEXTURE_MAG_FILTER, (int)GL_LINEAR );
+    glTexParameteri( GL_TEXTURE_2D, GLenum::GL_TEXTURE_MAG_FILTER, (int)GL_NEAREST );
     glTexParameteri( GL_TEXTURE_2D, GLenum::GL_TEXTURE_MIN_FILTER, (int)GL_LINEAR );
     glBindTexture( GLenum::GL_TEXTURE_2D, 0 );
     return true;
@@ -149,9 +147,12 @@ bool nsfw::Assets::loadShader( const char* name, const char* vpath, const char* 
 
     string vertexCode, fragmentCode;
     // Did we load the files?
-    if ( !loadText( vertexCode, "./Assets/Shaders/VertexShader.glsl" ) ||
-         !loadText( fragmentCode, "./Assets/Shaders/FragmentShader.glsl" ) ) {
-        cout << "Failed to load shader source files." << endl;
+    bool didLoadV = !loadText( vertexCode, vpath );
+    bool didLoadF = !loadText( fragmentCode, fpath );
+    if ( !didLoadV || !didLoadF ) {
+        cout << "Failed to load one or more shader source files." << endl;
+        if ( !didLoadV ) { cout << " - Could not load \"" << vpath << "\"" << endl; }
+        if ( !didLoadF ) { cout << " - Could not load \"" << fpath << "\"" << endl; }
         return false;
     }
 

@@ -22,19 +22,22 @@ int main() {
 
 
 void DeferredApplication::onInit() {
+    using namespace gl;
     auto& w = nsfw::Window::instance();
     auto& a = nsfw::Assets::instance();
 
     // Setup FBOs
     const char* gpassTextureNames[] = { "GPassAlbedo","GPassPosition","GPassNormal","GPassDepth" };
-    const unsigned gpassDepths[] = { 0,0,0,0 }; // GL_RGB8, GL_RGB32, GL_RGB32, GL_DEPTH_COMPONENT
+    const unsigned gpassDepths[] = { (unsigned int)GL_RGB8, (unsigned int)GL_RGB32F, (unsigned int)GL_RGB32F, (unsigned int)GL_DEPTH_COMPONENT }; // GL_RGB8, GL_RGB32, GL_RGB32, GL_DEPTH_COMPONENT
     a.makeFBO( "GeometryPass", w.getWidth(), w.getHeight(), 4, gpassTextureNames, gpassDepths );
 
     const char* lpassTextureNames[] = { "LPassColor" };
-    const unsigned lpassDepths[] = { 0 }; // GL_RGB8
+    const unsigned lpassDepths[] = { (unsigned int)GL_RGB8 }; // GL_RGB8
     a.makeFBO( "LightPass", w.getWidth(), w.getHeight(), 1, lpassTextureNames, lpassDepths );
 
     // Load Shaders
+    // TODO: Add shaders
+#pragma message ( __WARN__ "Add shaders!")
     a.loadShader( "GeometryPassPhong", "/path/to/gpass/Phong/vertex", "/path/to/gpass/Phong/fragment" );
     a.loadShader( "LightPassDirectional", "/path/to/lpass/Directional/vertex", "/path/to/lpass/Directional/fragment" );
     //a.loadShader("LightPassPoint", "/path/to/lpass/Point/vertex", "/path/to/lpass/Point/fragment");

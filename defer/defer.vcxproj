@@ -79,7 +79,7 @@
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(SolutionDir)$(Platform)\$(Configuration)\;$(SolutionDir)dep\glfw\src\$(Configuration)\;$(SolutionDir)dep\glbinding\$(Configuration)\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)$(Platform)\$(Configuration)\;$(SolutionDir)dep\glfw\src\$(Configuration)\;$(SolutionDir)dep\FBXFile\;$(SolutionDir)dep\glbinding\$(Configuration)\</AdditionalLibraryDirectories>
       <AdditionalDependencies>Opengl32.lib;glfw3.lib;nsfwgl.lib;glbindingd.lib;FBXfix_d.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
@@ -110,7 +110,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalLibraryDirectories>$(SolutionDir)$(Platform)\$(Configuration)\;$(SolutionDir)dep\glfw\src\$(Configuration)\;$(SolutionDir)dep\FBXFile\;$(SolutionDir)dep\glbinding\$(Configuration)\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)$(Platform)\$(Configuration)\;$(SolutionDir)dep\glfw\src\$(Configuration)\;$(SolutionDir)dep\FBXFile\;$(SolutionDir)dep\glbinding\$(Configuration)\</AdditionalLibraryDirectories>
       <AdditionalDependencies>Opengl32.lib;glfw3.lib;nsfwgl.lib;glbinding.lib;FBXfix.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>

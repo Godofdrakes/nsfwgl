@@ -1,4 +1,5 @@
 #include "nsfw.h"
+#include <cassert>
 #include <string>
 #include <fstream>
 #include <vector>
@@ -76,37 +77,37 @@ bool nsfw::Assets::makeVAO( const char* name, const Vertex* verts, unsigned vsiz
 }
 
 bool nsfw::Assets::makeFBO( const char* name, unsigned w, unsigned h, unsigned nTextures, const char* names[], const unsigned depths[] ) {
-//#pragma message ( __WARN__ "Create an FBO! Array parameters are for the render targets, which this function should also generate!\nuse makeTexture.\nNOTE THAT THERE IS NO FUNCTION SETUP FOR MAKING RENDER BUFFER OBJECTS.")
+#pragma message ( __WARN__ "Create an FBO! Array parameters are for the render targets, which this function should also generate!\nuse makeTexture.\nNOTE THAT THERE IS NO FUNCTION SETUP FOR MAKING RENDER BUFFER OBJECTS.")
     ASSET_LOG(GL_HANDLE_TYPE::FBO);
     using namespace gl;
-    unsigned int fbo = 0, depth = 0;
+    
+    GLuint frameBuffer = 0;
+    glGenFramebuffers( 1, &frameBuffer );
+    handles[AssetKey( GL_HANDLE_TYPE::FBO, name )] = frameBuffer;
+    glBindFramebuffer( GL_FRAMEBUFFER, frameBuffer );
 
-    glGenBuffers( 1, &fbo );
-    handles[AssetKey( GL_HANDLE_TYPE::FBO, name )] = fbo;
-    glBindFramebuffer( GLenum::GL_FRAMEBUFFER, fbo );
-
-    std::vector<GLenum> drawBuffers;
-
-    for ( unsigned int n = 0; n < nTextures && GLenum::GL_COLOR_ATTACHMENT0 + n <= GLenum::GL_COLOR_ATTACHMENT31; ++n ) {
+    for ( unsigned int n = 0; n < nTextures; ++n ) {
         makeTexture( names[n], w, h, depths[n] );
-        glFramebufferTexture( GLenum::GL_FRAMEBUFFER, GLenum::GL_COLOR_ATTACHMENT0 + n, handles[AssetKey( GL_HANDLE_TYPE::TEXTURE, names[n] )], 0 );
-        drawBuffers.push_back( GL_COLOR_ATTACHMENT0 + n );
+
+        GLuint depthBuffer = 0;
+        glGenRenderbuffers( 1, &depthBuffer );
+        handles[AssetKey( GL_HANDLE_TYPE::RBO, names[n] )] = depthBuffer;
+        glBindRenderbuffer( GL_RENDERBUFFER, depthBuffer );
+        glRenderbufferStorage( GL_RENDERBUFFER, GL_DEPTH_COMPONENT, w, h );
+        glFramebufferRenderbuffer( GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, depthBuffer );
+
+        glFramebufferTexture( GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, handles[AssetKey( GL_HANDLE_TYPE::TEXTURE, name )], 0 );
+        GLenum drawBuffers[] = { GL_COLOR_ATTACHMENT0 };
+        glDrawBuffers( 1, drawBuffers );
+
+        bool isError = glCheckFramebufferStatus( GL_FRAMEBUFFER ) != GL_FRAMEBUFFER_COMPLETE;
+
+        glBindRenderbuffer( GL_RENDERBUFFER, 0 );
+
+        assert( !isError );
     }
 
-    glGenRenderbuffers( 1, &depth );
-    handles[AssetKey( GL_HANDLE_TYPE::RBO, name )] = depth;
-    makeTexture( name, w, h, (unsigned int)GLenum::GL_RGB8 );
-    glFramebufferTexture( GLenum::GL_FRAMEBUFFER, GLenum::GL_DEPTH_ATTACHMENT, depth, 0 );
-
-    glDrawBuffers( drawBuffers.size(), drawBuffers.data() );
-
-    GLenum status = glCheckFramebufferStatus( GLenum::GL_FRAMEBUFFER );
-    glBindFramebuffer( GLenum::GL_FRAMEBUFFER, 0 );
-    if( status != GLenum::GL_FRAMEBUFFER_COMPLETE ) {
-        printf( "Framebuffer Error\n" );
-        return false;
-    }
-
+    glBindFramebuffer( GL_FRAMEBUFFER, 0 );
     return true;
 }
 
@@ -114,18 +115,11 @@ bool nsfw::Assets::makeTexture( const char* name, unsigned w, unsigned h, unsign
 //#pragma message ( __WARN__ "Allocate a texture using the given space/dimensions. Should work if 'pixels' is null, so that you can use this same function with makeFBO\n note that Dept will use a GL value." )
     ASSET_LOG( GL_HANDLE_TYPE::TEXTURE );
     using namespace gl;
-    unsigned int tex;
+    GLuint tex;
     glGenTextures( 1, &tex );
     handles[AssetKey( GL_HANDLE_TYPE::TEXTURE, name )] = tex;
     glBindTexture( GLenum::GL_TEXTURE_2D, tex );
-    if( pixels == nullptr ) {
-        char* pix = new char[w * h * depth];
-        for ( unsigned int n = 0; n < w*h * depth; ++n ) { pix[n] = 0; }
-        glTexImage2D( GLenum::GL_TEXTURE_2D, 0, depth, w, h, 0, GLenum::GL_RGB, GLenum::GL_UNSIGNED_BYTE, pix );
-    } 
-    else {
-        glTexImage2D( GLenum::GL_TEXTURE_2D, 0, depth, w, h, 0, GLenum::GL_RGB, GLenum::GL_UNSIGNED_BYTE, pixels );
-    }
+    glTexImage2D( GLenum::GL_TEXTURE_2D, 0, depth, w, h, 0, (GLenum)depth, GLenum::GL_UNSIGNED_BYTE, pixels );
     glTexParameteri( GL_TEXTURE_2D, GLenum::GL_TEXTURE_MAG_FILTER, (int)GL_LINEAR );
     glTexParameteri( GL_TEXTURE_2D, GLenum::GL_TEXTURE_MIN_FILTER, (int)GL_LINEAR );
     glBindTexture( GLenum::GL_TEXTURE_2D, 0 );
@@ -142,7 +136,9 @@ bool nsfw::Assets::loadTexture( const char* name, const char* path ) {
     unsigned char* pixels = stbi_load( path, &w, &h, &format, STBI_rgb_alpha );
     makeTexture( name, w, h, (int)gl::GLenum::GL_RGBA, (char*)pixels );
     stbi_image_free( pixels );
-    return false;
+    // TODO: Double check this is still functional with the changes to makeTexture
+#pragma message( __WARN__ "Double check this is still functional with the changes to makeTexture")
+    return true;
 }
 
 bool nsfw::Assets::loadShader( const char* name, const char* vpath, const char* fpath ) {
@@ -214,7 +210,7 @@ bool nsfw::Assets::loadFBX( const char* name, const char* path ) {
         return false;
     }
 
-    for ( int n = 0; n < fbx_file.getMeshCount(); ++n ) {
+    for ( unsigned int n = 0; n < fbx_file.getMeshCount(); ++n ) {
         FBXMeshNode* mesh = fbx_file.getMeshByIndex( n );
         string meshName = name + mesh->m_name;
         vector<Vertex> verts( mesh->m_vertices.size() );
@@ -227,7 +223,7 @@ bool nsfw::Assets::loadFBX( const char* name, const char* path ) {
         makeVAO( meshName.c_str(), verts.data(), verts.size(), mesh->m_indices.data(), mesh->m_indices.size() );
     }
 
-    for ( int n = 0; n < fbx_file.getTextureCount(); ++n ) {
+    for ( unsigned int n = 0; n < fbx_file.getTextureCount(); ++n ) {
         FBXTexture* texture = fbx_file.getTextureByIndex( n );
         string textureName = name + texture->name;
         makeTexture( textureName.c_str(), texture->width, texture->height, texture->format, (char*)texture->data );
@@ -254,12 +250,11 @@ bool nsfw::Assets::loadOBJ( const char* name, const char* path ) {
         return false;
     }
 
-    for ( int n = 0; n < shapes.size(); ++n )
-    {
+    for ( unsigned int n = 0; n < shapes.size(); ++n ) {
         using namespace glm;
         string shapeName = name + shapes[n].name;
         vector<Vertex> verts( shapes[n].mesh.positions.size() / 3 );
-        for ( int nn = 0; nn < verts.size(); ++nn ) {
+        for ( unsigned int nn = 0; nn < verts.size(); ++nn ) {
             verts[nn].position = vec4( shapes[n].mesh.positions[nn * 3], shapes[n].mesh.positions[nn * 3 + 1], shapes[n].mesh.positions[nn * 3 + 2], 1.0f );
             verts[nn].normal   = vec4( shapes[n].mesh.normals[nn * 3], shapes[n].mesh.normals[nn * 3 + 1], shapes[n].mesh.normals[nn * 3 + 2], 0.0f );
             verts[nn].tangent  = vec4( verts[nn].normal.y, -verts[nn].normal.x, verts[nn].normal.z, 0.0f );

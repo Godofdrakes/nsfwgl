@@ -125,17 +125,15 @@ bool nsfw::Assets::makeTexture( const char* name, unsigned w, unsigned h, unsign
 }
 
 bool nsfw::Assets::loadTexture( const char* name, const char* path ) {
-//#pragma message ( "This should load a texture from a file, using makeTexture to perform the allocation.\nUse STBI, and make sure you switch the format STBI provides to match what openGL needs!")
     using namespace std;
     ifstream file( path );
     if ( !file.good() ) { file.close(); return false; }
     file.close();
     int w = 0, h = 0, format = 0;
+    // technically format value is useless. The if 5th parameter is not 0 then it will convert the loaded data to that format
     unsigned char* pixels = stbi_load( path, &w, &h, &format, STBI_rgb_alpha );
     makeTexture( name, w, h, (int)gl::GLenum::GL_RGBA, (char*)pixels );
     stbi_image_free( pixels );
-    // TODO: Double check this is still functional with the changes to makeTexture
-#pragma message( __WARN__ "Double check this is still functional with the changes to makeTexture")
     return true;
 }
 

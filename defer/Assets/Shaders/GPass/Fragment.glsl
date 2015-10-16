@@ -10,5 +10,7 @@ layout( location = 1 ) out vec3 gpassPosition;
 layout( location = 2 ) out vec3 gpassNormal;
 
 void main() {
-
+    gpassAlbedo = vec3( 1 );
+    gpassPosition = fs_in.Position.xyz;
+    gpassNormal = fs_in.normal.xyz;
 }

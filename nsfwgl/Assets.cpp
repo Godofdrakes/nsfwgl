@@ -116,9 +116,14 @@ bool nsfw::Assets::makeTexture( const char* name, unsigned w, unsigned h, unsign
     glGenTextures( 1, &tex );
     handles[AssetKey( GL_HANDLE_TYPE::TEXTURE, name )] = tex;
     glBindTexture( GLenum::GL_TEXTURE_2D, tex );
-    glTexImage2D( GLenum::GL_TEXTURE_2D, 0, depth, w, h, 0, (GLenum)depth, GLenum::GL_UNSIGNED_BYTE, pixels );
-    glTexParameteri( GL_TEXTURE_2D, GLenum::GL_TEXTURE_MAG_FILTER, (int)GL_NEAREST );
-    glTexParameteri( GL_TEXTURE_2D, GLenum::GL_TEXTURE_MIN_FILTER, (int)GL_LINEAR );
+    GLenum attachment = (GLenum)depth;
+    if ( pixels ) {
+        glTexImage2D( GLenum::GL_TEXTURE_2D, 0, depth, w, h, 0, (GLenum)depth, GLenum::GL_UNSIGNED_BYTE, pixels );
+        glTexParameteri( GL_TEXTURE_2D, GLenum::GL_TEXTURE_MAG_FILTER, (int)GL_NEAREST );
+        glTexParameteri( GL_TEXTURE_2D, GLenum::GL_TEXTURE_MIN_FILTER, (int)GL_LINEAR );
+    } else {
+        glTexStorage2D( GLenum::GL_TEXTURE_2D, 1, (GLenum)depth, w, h );
+    }
     glBindTexture( GLenum::GL_TEXTURE_2D, 0 );
     return true;
 }

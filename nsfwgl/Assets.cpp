@@ -47,7 +47,6 @@ bool nsfw::Assets::makeVAO( const char* name, const Vertex* verts, unsigned vsiz
     using namespace glbinding;
     using namespace gl;
     unsigned int vao = 0, vbo = 0, ibo = 0;
-    unsigned int size = tsize;
 
     ASSET_LOG( GL_HANDLE_TYPE::VAO );
     glGenVertexArrays( 1, &vao );
@@ -73,7 +72,7 @@ bool nsfw::Assets::makeVAO( const char* name, const Vertex* verts, unsigned vsiz
     glBindBuffer( GLenum::GL_ARRAY_BUFFER, 0 );
     glBindBuffer( GLenum::GL_ELEMENT_ARRAY_BUFFER, 0 );
 
-    return vao != 0 && vbo != 0 && ibo != 0 && size != 0;
+    return vao != 0 && vbo != 0 && ibo != 0 && tsize != 0;
 }
 
 // If used, GL_DEPTH_COMPONENT must be the last item in depths[]

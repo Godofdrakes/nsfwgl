@@ -93,12 +93,29 @@ bool nsfw::Assets::makeFBO( const char* name, unsigned w, unsigned h, unsigned n
 
     GLuint bufferCount = 0;
     for ( unsigned int n = 0; n < nTextures; ++n ) {
-        makeTexture( names[n], w, h, depths[n] );
-        glFramebufferTexture2D( GL_FRAMEBUFFER,
-                                ( depths[n] == GL_DEPTH_COMPONENT ) ? GL_DEPTH_ATTACHMENT : ( GL_COLOR_ATTACHMENT0 + bufferCount++ ),
-                                GL_TEXTURE_2D,
-                                get( TEXTURE, names[n] ),
-                                0 );
+        GLenum depth = (GLenum)depths[n];
+        if ( depth == GL_DEPTH_COMPONENT ) {
+            GLuint rbo;
+            glGetError();
+            glGenRenderbuffers( 1, &rbo );
+            glBindRenderbuffer( GL_RENDERBUFFER, rbo );
+            glRenderbufferStorage( GL_RENDERBUFFER, depth, w, h );
+            glBindRenderbuffer( GL_RENDERBUFFER, 0 );
+            handles[AssetKey( GL_HANDLE_TYPE::RBO, names[n] )] = rbo;
+            glFramebufferRenderbuffer( GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, handles[AssetKey( GL_HANDLE_TYPE::RBO, names[n] )] );
+        }
+        else {
+            makeTexture( names[n], w, h, (unsigned int)depth );
+            glFramebufferTexture2D( GL_FRAMEBUFFER,
+                                    GL_COLOR_ATTACHMENT0 + bufferCount++,
+                                    GL_TEXTURE_2D,
+                                    get( TEXTURE, names[n] ),
+                                    0 );
+        }
+
+        GLenum attachment;
+        if ( depths[n] == GL_DEPTH_COMPONENT ) { attachment = GL_DEPTH_ATTACHMENT; }
+        else { attachment = GL_COLOR_ATTACHMENT0 + bufferCount++; }
     }
     glDrawBuffers( bufferCount, drawBuffers.data() );
 

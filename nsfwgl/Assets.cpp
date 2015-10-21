@@ -125,9 +125,7 @@ bool nsfw::Assets::makeTexture( const char* name, unsigned w, unsigned h, unsign
 
 bool nsfw::Assets::loadTexture( const char* name, const char* path ) {
     using namespace std;
-    ifstream file( path );
-    if ( !file.good() ) { file.close(); return false; }
-    file.close();
+    assert( fileExists( path ) );
     int w = 0, h = 0, format = 0;
     // technically format value is useless. The if 5th parameter is not 0 then it will convert the loaded data to that format
     unsigned char* pixels = stbi_load( path, &w, &h, &format, STBI_rgb_alpha );
@@ -200,7 +198,7 @@ bool nsfw::Assets::loadFBX( const char* name, const char* path ) {
 #pragma message ( __WARN__ "FBX file-loading support needed.\nThis function should call loadTexture and makeVAO internally.\nFBX meshes each have their own name, you may use this to name the meshes as they come in.\nMAKE SURE YOU SUPPORT THE DIFFERENCE BETWEEN FBXVERTEX AND YOUR VERTEX STRUCT!\n")
     using namespace std;
 
-    if ( !fileExists( path ) ) { return false; }
+    assert( fileExists( path ) );
 
     FBXFile fbx_file;
     if ( !fbx_file.load( path ) ) {
@@ -237,7 +235,7 @@ bool nsfw::Assets::loadOBJ( const char* name, const char* path ) {
 
     using namespace std;
     using namespace tinyobj;
-    if( !fileExists( path ) ) { return false; }
+    assert( fileExists( path ) );
 
     vector<shape_t> shapes;
     vector<material_t> materials;
@@ -276,7 +274,7 @@ bool nsfw::Assets::fileExists( const char* path ) {
 bool nsfw::Assets::loadText( std::string& fileContent, const char* path ) {
     using namespace std;
 
-    if( !fileExists( path ) ) { return false; }
+    assert( fileExists( path ) );
 
     string line;
     ifstream file( path );

@@ -184,6 +184,7 @@ bool nsfw::Assets::loadShader( const char* name, const char* vpath, const char* 
         cout << "Error: Failed to link shader program!" << endl;
         cout << infoLog << endl;
         delete[]( infoLog );
+        glDeleteProgram( program );
         return false;
     }
 
@@ -317,7 +318,8 @@ void nsfw::Assets::term() {
             glDeleteVertexArrays( 1, &k.second );
                 break;
             case SHADER :
-#pragma message ( __WARN__ "Shader deletion" )
+//#pragma message ( __WARN__ "Shader deletion" )
+            glDeleteProgram( k.second );
                 break;
             case TEXTURE :
 //#pragma message ( __WARN__ "Texture deletion" )

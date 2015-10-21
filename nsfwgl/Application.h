@@ -39,6 +39,16 @@ namespace nsfw {
             gl::glGetIntegerv( gl::GLenum::GL_MINOR_VERSION, &minor );
             std::cout << "OpenGL Version: " << major << "." << minor << std::endl;
 
+            setCallbackMaskExcept( CallbackMask::After, { "glGetError" } );
+            setAfterCallback( []( const FunctionCall & ) {
+                using namespace gl;
+                GLenum error = glGetError();
+                if ( error != GL_NO_ERROR ) {
+                    std::cout << "ERROR: " << std::hex << error << std::endl;
+                    assert( false );
+                }
+            } );
+
             Assets::instance().init();
             onInit();
         }

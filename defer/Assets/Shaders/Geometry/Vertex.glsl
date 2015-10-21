@@ -1,18 +1,17 @@
-#version 410 core
+#version 450 core
 
 layout( location = 0 ) in vec4 inPosition;
 layout( location = 1 ) in vec4 inNormal;
 
-out VS_OUT {
-    vec4 position;
-    vec4 normal;
-} vs_out;
+out vec4 vPosition;
+out vec4 vNormal;
 
+uniform mat4 uProjection;
 uniform mat4 uView;
-uniform mat4 uProjectionView;
+uniform mat4 uModel;
 
 void main() {
-    vs_out.position = uView * inPosition;
-    vs_out.normal = normalize( uView * inNormal );
-    gl_Position = uProjectionView * inPosition;
+    vPosition = uView * inPosition;
+    vNormal = normalize( uView * inNormal );
+    gl_Position = uProjection * uView * inPosition;
 }

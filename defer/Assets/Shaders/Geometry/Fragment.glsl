@@ -1,9 +1,7 @@
-#version 410 core
+#version 450 core
 
-in VS_OUT {
-    vec4 position;
-    vec4 normal;
-} fs_in;
+in vec4 vPosition;
+in vec4 vNormal;
 
 layout( location = 0 ) out vec3 gpassAlbedo;
 layout( location = 1 ) out vec3 gpassPosition;
@@ -11,6 +9,6 @@ layout( location = 2 ) out vec3 gpassNormal;
 
 void main() {
     gpassAlbedo = vec3( 1 );
-    gpassPosition = fs_in.Position.xyz;
-    gpassNormal = fs_in.normal.xyz;
+    gpassPosition = vPosition.xyz;
+    gpassNormal = vNormal.xyz;
 }

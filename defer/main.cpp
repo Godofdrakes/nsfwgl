@@ -38,13 +38,13 @@ void DeferredApplication::onInit() {
     // Load Shaders
     // TODO: Add shaders
 #pragma message ( __WARN__ "Add shaders!")
-    a.loadShader( "GeometryPassPhong", "/Assets/Shaders/Geometry/Vertex.glsl", "/Assets/Shaders/Geometry/Fragment.glsl" );
-    a.loadShader( "LightPassDirectional", "/Assets/Shaders/Lighting/Vertex.glsl", "/Assets/Shaders/Lighting/Fragment.glsl" );
+    a.loadShader( "GeometryPassPhong", "./Assets/Shaders/Geometry/Vertex.glsl", "./Assets/Shaders/Geometry/Fragment.glsl" );
+    a.loadShader( "LightPassDirectional", "./Assets/Shaders/Lighting/Vertex.glsl", "./Assets/Shaders/Lighting/Fragment.glsl" );
     //a.loadShader("LightPassPoint", "/path/to/lpass/Point/vertex", "/path/to/lpass/Point/fragment");
-    a.loadShader( "CompPass", "/Assets/Shaders/Composite/Vertex.glsl", "/Assets/Shaders/Composite/Fragment.glsl" );
+    a.loadShader( "CompPass", "./Assets/Shaders/Composite/Vertex.glsl", "./Assets/Shaders/Composite/Fragment.glsl" );
 
     // Load any other textures and geometry we want to use
-    a.loadFBX( "Soulspear", "/path/to/souuuulspppeeeeaaar" );
+    a.loadFBX( "Soulspear", "./Assets/FBX/SoulSpear/soulspear.fbx" );
 }
 
 void DeferredApplication::onPlay() {

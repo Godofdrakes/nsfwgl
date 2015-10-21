@@ -88,7 +88,6 @@ bool nsfw::Assets::makeFBO( const char* name, unsigned w, unsigned h, unsigned n
     
     GLuint frameBuffer = 0;
     glGenFramebuffers( 1, &frameBuffer );
-    handles[AssetKey( GL_HANDLE_TYPE::FBO, name )] = frameBuffer;
     glBindFramebuffer( GL_FRAMEBUFFER, frameBuffer );
 
     GLuint bufferCount = 0;
@@ -121,6 +120,7 @@ bool nsfw::Assets::makeFBO( const char* name, unsigned w, unsigned h, unsigned n
 
     assert( glCheckFramebufferStatus( GLenum::GL_FRAMEBUFFER ) == GLenum::GL_FRAMEBUFFER_COMPLETE );
 
+    handles[AssetKey( GL_HANDLE_TYPE::FBO, name )] = frameBuffer;
     glBindFramebuffer( GL_FRAMEBUFFER, 0 );
     return true;
 }

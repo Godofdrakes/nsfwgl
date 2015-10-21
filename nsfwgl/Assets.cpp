@@ -75,7 +75,6 @@ bool nsfw::Assets::makeVAO( const char* name, const Vertex* verts, unsigned vsiz
     return vao != 0 && vbo != 0 && ibo != 0 && tsize != 0;
 }
 
-// If used, GL_DEPTH_COMPONENT must be the last item in depths[]
 bool nsfw::Assets::makeFBO( const char* name, unsigned w, unsigned h, unsigned nTextures, const char* names[], const unsigned depths[] ) {
 #pragma message ( __WARN__ "Create an FBO! Array parameters are for the render targets, which this function should also generate!\nuse makeTexture.\nNOTE THAT THERE IS NO FUNCTION SETUP FOR MAKING RENDER BUFFER OBJECTS.")
     ASSET_LOG(GL_HANDLE_TYPE::FBO);
@@ -162,30 +161,9 @@ bool nsfw::Assets::loadShader( const char* name, const char* vpath, const char* 
     using namespace gl;
     using namespace std;
 
-    string vertexCode, fragmentCode;
-    // Did we load the files?
-    bool didLoadV = !loadText( vertexCode, vpath );
-    bool didLoadF = !loadText( fragmentCode, fpath );
-    if ( !didLoadV || !didLoadF ) {
-        cout << "Failed to load one or more shader source files." << endl;
-        if ( !didLoadV ) { cout << " - Could not load \"" << vpath << "\"" << endl; }
-        if ( !didLoadF ) { cout << " - Could not load \"" << fpath << "\"" << endl; }
-        return false;
-    }
-
-    unsigned int program = 0, vertexShader = 0, fragmentShader = 0;
-
-    const char* vertexSource = vertexCode.c_str();
-    int sourceSize = vertexCode.size();
-    vertexShader = glCreateShader( GLenum::GL_VERTEX_SHADER );
-    glShaderSource( vertexShader, 1, &vertexSource, &sourceSize );
-    glCompileShader( vertexShader );
-
-    const char* fragmentSource = fragmentCode.c_str();
-    sourceSize = fragmentCode.size();
-    fragmentShader = glCreateShader( GLenum::GL_VERTEX_SHADER );
-    glShaderSource( fragmentShader, 1, &fragmentSource, &sourceSize );
-    glCompileShader( fragmentShader );
+    unsigned int program = 0,
+        vertexShader = compileShader( gl::GLenum::GL_VERTEX_SHADER, vpath ),
+        fragmentShader = compileShader( gl::GLenum::GL_FRAGMENT_SHADER, fpath );
 
     program = glCreateProgram();
     glAttachShader( program, vertexShader );
@@ -207,12 +185,48 @@ bool nsfw::Assets::loadShader( const char* name, const char* vpath, const char* 
         cout << infoLog << endl;
         delete[]( infoLog );
         glDeleteProgram( program );
-        return false;
+        assert( false );
     }
 
     handles[AssetKey( GL_HANDLE_TYPE::SHADER, name )] = program;
 
     return true;
+}
+
+unsigned int nsfw::Assets::compileShader( gl::GLenum type, const char* path ) {
+    using namespace std;
+    using namespace gl;
+    assert( fileExists( path ) );
+
+    string source_raw;
+    assert( loadText( source_raw, path ) );
+
+    unsigned int handle = glCreateShader( type );
+    const char* source_cstr = source_raw.c_str();
+    int size = source_raw.size();
+    glShaderSource( handle, 1, &source_cstr, &size );
+    glCompileShader( handle );
+
+    GLint success = 0;
+    glGetShaderiv( handle, GLenum::GL_COMPILE_STATUS, &success );
+    if( success == (GLint)GL_FALSE ) {
+        GLint log_length = 0;
+        glGetShaderiv( handle, GL_INFO_LOG_LENGTH, &log_length );
+
+        // The maxLength includes the NULL character
+        std::vector<GLchar> errorLog( log_length );
+        glGetShaderInfoLog( handle, log_length, &log_length, &errorLog[0] );
+
+        cout << errorLog.data() << endl;
+
+        // Provide the infolog in whatever manor you deem best.
+        // Exit with failure.
+        glDeleteShader( handle ); // Don't leak the shader.
+        assert( false );
+        return 0;
+    }
+
+    return handle;
 }
 
 bool nsfw::Assets::loadFBX( const char* name, const char* path ) {
@@ -303,7 +317,7 @@ bool nsfw::Assets::loadText( std::string& fileContent, const char* path ) {
     ifstream file( path );
     fileContent.clear();
     while( getline( file, line ) ) {
-        fileContent += line;
+        fileContent += line + "\n";
     }
 
     file.close();

@@ -1,6 +1,7 @@
 #pragma once
 #include <unordered_map>
 #include <string>
+#include <glbinding/gl/enum.h>
 
 /*
 	The asset management object is a place to keep track of all of the memory
@@ -156,6 +157,8 @@ namespace nsfw {
 
         // should load a shader from file
         bool loadShader( const char* name, const char* vpath, const char* fpath );
+
+        unsigned int compileShader( gl::GLenum type, const char* path );
 
         // should load from an FBX, adding assets to the library as they are discovered
         bool loadFBX( const char* name, const char* path );

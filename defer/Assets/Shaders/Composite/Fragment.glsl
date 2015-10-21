@@ -2,7 +2,7 @@
 
 in vec2 vTexCoord;
 
-out vec2 FragColor;
+out vec4 FragColor;
 
 uniform sampler2D albedoTexture;
 uniform sampler2D lightTexture;

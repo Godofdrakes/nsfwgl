@@ -134,6 +134,7 @@ bool nsfw::Assets::makeTexture( const char* name, unsigned w, unsigned h, unsign
     glBindTexture( GLenum::GL_TEXTURE_2D, tex );
     GLenum attachment = (GLenum)depth;
     if ( pixels ) {
+        // TODO fix FBX texture loading
         glTexImage2D( GLenum::GL_TEXTURE_2D, 0, depth, w, h, 0, (GLenum)depth, GLenum::GL_UNSIGNED_BYTE, pixels );
         glTexParameteri( GL_TEXTURE_2D, GLenum::GL_TEXTURE_MAG_FILTER, (int)GL_NEAREST );
         glTexParameteri( GL_TEXTURE_2D, GLenum::GL_TEXTURE_MIN_FILTER, (int)GL_LINEAR );
@@ -243,15 +244,16 @@ bool nsfw::Assets::loadFBX( const char* name, const char* path ) {
         return false;
     }
 
-    for ( unsigned int n = 0; n < fbx_file.getMeshCount(); ++n ) {
-        FBXMeshNode* mesh = fbx_file.getMeshByIndex( n );
+    for ( unsigned int outer = 0; outer < fbx_file.getMeshCount(); ++outer ) {
+        FBXMeshNode* mesh = fbx_file.getMeshByIndex( outer );
         string meshName = name + mesh->m_name;
         vector<Vertex> verts( mesh->m_vertices.size() );
-        for ( int nn = 0; n < verts.size(); ++nn ) {
-            verts[nn].position = mesh->m_vertices[nn].position;
-            verts[nn].normal = mesh->m_vertices[nn].normal;
-            verts[nn].tangent = mesh->m_vertices[nn].tangent;
-            verts[nn].texCoord = mesh->m_vertices[nn].texCoord1;
+        unsigned int size = verts.size();
+        for ( unsigned int inner = 0; inner < size; ++inner ) {
+            verts[inner].position = mesh->m_vertices[inner].position;
+            verts[inner].normal = mesh->m_vertices[inner].normal;
+            verts[inner].tangent = mesh->m_vertices[inner].tangent;
+            verts[inner].texCoord = mesh->m_vertices[inner].texCoord1;
         }
         makeVAO( meshName.c_str(), verts.data(), verts.size(), mesh->m_indices.data(), mesh->m_indices.size() );
     }

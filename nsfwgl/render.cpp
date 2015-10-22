@@ -4,27 +4,32 @@
 // Each Case should set up a uniform using the pass parameters
 bool nsfw::RenderPass::setUniform( const char* name, nsfw::UNIFORM::TYPE type, const void* value, unsigned count, bool normalize ) {
     using namespace gl;
+    int location = glGetUniformLocation( *shader, name );
+    assert( location != -1 && "Uniform does not exist." );
+    assert( value != nullptr && "Value must not be null" );
     switch ( type ) {
-        case nsfw::UNIFORM::FLO1 :
-#pragma message ( __WARN__ "Setup float uniform!")
+        case nsfw::UNIFORM::FLO1:
+            glUniform1fv( location, count, ( float* )value );
             break;
-        case nsfw::UNIFORM::FLO3 :
-#pragma message ( __WARN__ "Setup vec3 uniform!")
+        case nsfw::UNIFORM::FLO3:
+            glUniform3fv( location, count, ( float* )value );
             break;
-        case nsfw::UNIFORM::FLO4 :
-#pragma message ( __WARN__ "Setup vec4 uniform!")
+        case nsfw::UNIFORM::FLO4:
+            glUniform4fv( location, count, ( float* )value );
             break;
-        case nsfw::UNIFORM::MAT4 :
-#pragma message ( __WARN__ "Setup mat4 uniform!")
+        case nsfw::UNIFORM::MAT4:
+            glUniformMatrix4fv( location, count, GLboolean::GL_FALSE, (float*)value );
             break;
-        case nsfw::UNIFORM::INT1 :
-#pragma message ( __WARN__ "Setup integer uniform!")
+        case nsfw::UNIFORM::INT1:
+            glUniform1iv( location, count, ( int* )value );
             break;
-        case nsfw::UNIFORM::TEX2 :
-#pragma message ( __WARN__ "Setup texture2D uniform!")
+        case nsfw::UNIFORM::TEX2:
+            glUniform1i( location, count );
+            glActiveTexture( GL_TEXTURE0 + count );
+            glBindTexture( GL_TEXTURE_2D, *(GLuint*)value );
             break;
-        default :
-#pragma message ( __WARN__ "INVALID Uniform type.")
+        default:
+            assert( false && "INVALID Uniform type." );
             break;
     }
 

@@ -22,6 +22,7 @@ nsfw::GL_HANDLE nsfw::Assets::getVERIFIED( const AssetKey& key ) const {
 #ifdef _DEBUG
     if ( !handles.count( key ) ) {
         std::cerr << "Asset Key not found: <" << TYPE_NAMES[key.first] << ">" << key.second << std::endl;
+        assert( false );
         return 0;
     }
 #endif
@@ -255,13 +256,26 @@ bool nsfw::Assets::loadFBX( const char* name, const char* path ) {
             verts[inner].tangent = mesh->m_vertices[inner].tangent;
             verts[inner].texCoord = mesh->m_vertices[inner].texCoord1;
         }
-        makeVAO( meshName.c_str(), verts.data(), verts.size(), mesh->m_indices.data(), mesh->m_indices.size() );
+        makeVAO( name, verts.data(), verts.size(), mesh->m_indices.data(), mesh->m_indices.size() );
     }
 
     for ( unsigned int n = 0; n < fbx_file.getTextureCount(); ++n ) {
         FBXTexture* texture = fbx_file.getTextureByIndex( n );
         string textureName = name + texture->name;
-        makeTexture( textureName.c_str(), texture->width, texture->height, texture->format, (char*)texture->data );
+        switch( texture->format ) {
+            case 1:
+            makeTexture( textureName.c_str(), texture->width, texture->height, (unsigned int)gl::GLenum::GL_R , (char*)texture->data );
+                break;
+            case 2:
+                makeTexture( textureName.c_str(), texture->width, texture->height, (unsigned int)gl::GLenum::GL_RG, (char*)texture->data );
+                break;
+            case 3:
+                makeTexture( textureName.c_str(), texture->width, texture->height, (unsigned int)gl::GLenum::GL_RGB, (char*)texture->data );
+                break;
+            case 4:
+                makeTexture( textureName.c_str(), texture->width, texture->height, (unsigned int)gl::GLenum::GL_RGBA, (char*)texture->data );
+                break;
+        }
     }
 
     fbx_file.unload();

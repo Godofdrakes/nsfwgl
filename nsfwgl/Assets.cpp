@@ -51,22 +51,33 @@ bool nsfw::Assets::makeVAO( const char* name, const Vertex* verts, unsigned vsiz
 
     ASSET_LOG( GL_HANDLE_TYPE::VAO );
     glGenVertexArrays( 1, &vao );
-    handles[AssetKey( GL_HANDLE_TYPE::VAO, name )] = vao;
     glBindVertexArray( vao );
 
     ASSET_LOG( GL_HANDLE_TYPE::VBO );
     glGenBuffers( 1, &vbo );
-    handles[AssetKey( GL_HANDLE_TYPE::VBO, name )] = vbo;
     glBindBuffer( GLenum::GL_ARRAY_BUFFER, vbo );
     glBufferData( GLenum::GL_ARRAY_BUFFER, sizeof( Vertex ) * vsize, verts, GLenum::GL_STATIC_DRAW );
 
+    glEnableVertexAttribArray( 0 );
+    glVertexAttribPointer( 0, 4, GLenum::GL_FLOAT, GLboolean::GL_FALSE, sizeof( Vertex ), 0 );
+
+    glEnableVertexAttribArray( 1 );
+    glVertexAttribPointer( 1, 4, GLenum::GL_FLOAT, GLboolean::GL_FALSE, sizeof( Vertex ), (void*)( sizeof( glm::vec4 ) * 1 ) );
+
+    glEnableVertexAttribArray( 2 );
+    glVertexAttribPointer( 2, 4, GLenum::GL_FLOAT, GLboolean::GL_FALSE, sizeof( Vertex ), (void*)( sizeof( glm::vec4 ) * 2 ) );
+
+    glEnableVertexAttribArray( 3 );
+    glVertexAttribPointer( 3, 2, GLenum::GL_FLOAT, GLboolean::GL_FALSE, sizeof( Vertex ), (void*)( sizeof( glm::vec4 ) * 3 ) );
+
     ASSET_LOG( GL_HANDLE_TYPE::IBO );
     glGenBuffers( 1, &ibo );
-    handles[AssetKey( GL_HANDLE_TYPE::IBO, name )] = ibo;
     glBindBuffer( GLenum::GL_ELEMENT_ARRAY_BUFFER, ibo );
     glBufferData( GLenum::GL_ELEMENT_ARRAY_BUFFER, sizeof( unsigned ) * tsize, tris, GLenum::GL_STATIC_DRAW );
 
     ASSET_LOG( GL_HANDLE_TYPE::SIZE );
+
+    handles[AssetKey( GL_HANDLE_TYPE::VAO, name )] = vao;
     handles[AssetKey( GL_HANDLE_TYPE::SIZE, name )] = tsize;
 
     glBindVertexArray( 0 );
@@ -90,33 +101,17 @@ bool nsfw::Assets::makeFBO( const char* name, unsigned w, unsigned h, unsigned n
     glGenFramebuffers( 1, &frameBuffer );
     glBindFramebuffer( GL_FRAMEBUFFER, frameBuffer );
 
-    GLuint bufferCount = 0;
+    GLuint colorBufferCount = 0;
     for ( unsigned int n = 0; n < nTextures; ++n ) {
-        GLenum depth = (GLenum)depths[n];
-        if ( depth == GL_DEPTH_COMPONENT ) {
-            GLuint rbo;
-            glGetError();
-            glGenRenderbuffers( 1, &rbo );
-            glBindRenderbuffer( GL_RENDERBUFFER, rbo );
-            glRenderbufferStorage( GL_RENDERBUFFER, depth, w, h );
-            glBindRenderbuffer( GL_RENDERBUFFER, 0 );
-            handles[AssetKey( GL_HANDLE_TYPE::RBO, names[n] )] = rbo;
-            glFramebufferRenderbuffer( GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, handles[AssetKey( GL_HANDLE_TYPE::RBO, names[n] )] );
-        }
-        else {
-            makeTexture( names[n], w, h, (unsigned int)depth );
-            glFramebufferTexture2D( GL_FRAMEBUFFER,
-                                    GL_COLOR_ATTACHMENT0 + bufferCount++,
-                                    GL_TEXTURE_2D,
-                                    get( TEXTURE, names[n] ),
-                                    0 );
-        }
-
-        GLenum attachment;
-        if ( depths[n] == GL_DEPTH_COMPONENT ) { attachment = GL_DEPTH_ATTACHMENT; }
-        else { attachment = GL_COLOR_ATTACHMENT0 + bufferCount++; }
+        makeTexture( names[n], w, h, depths[n] );
+        GLenum attachment = depths[n] == GL_DEPTH_COMPONENT ? GL_DEPTH_ATTACHMENT : GL_COLOR_ATTACHMENT0 + colorBufferCount++;
+        glFramebufferTexture2D( GL_FRAMEBUFFER,
+                                attachment,
+                                GL_TEXTURE_2D,
+                                get( TEXTURE, names[n] ),
+                                0 );
     }
-    glDrawBuffers( bufferCount, drawBuffers.data() );
+    glDrawBuffers( colorBufferCount, drawBuffers.data() );
 
     assert( glCheckFramebufferStatus( GLenum::GL_FRAMEBUFFER ) == GLenum::GL_FRAMEBUFFER_COMPLETE );
 
@@ -129,19 +124,20 @@ bool nsfw::Assets::makeTexture( const char* name, unsigned w, unsigned h, unsign
 //#pragma message ( __WARN__ "Allocate a texture using the given space/dimensions. Should work if 'pixels' is null, so that you can use this same function with makeFBO\n note that Dept will use a GL value." )
     ASSET_LOG( GL_HANDLE_TYPE::TEXTURE );
     using namespace gl;
-    GLuint tex;
+    GLuint tex = 0;
     glGenTextures( 1, &tex );
-    handles[AssetKey( GL_HANDLE_TYPE::TEXTURE, name )] = tex;
     glBindTexture( GLenum::GL_TEXTURE_2D, tex );
     GLenum attachment = (GLenum)depth;
-    if ( pixels ) {
-        // TODO fix FBX texture loading
-        glTexImage2D( GLenum::GL_TEXTURE_2D, 0, depth, w, h, 0, (GLenum)depth, GLenum::GL_UNSIGNED_BYTE, pixels );
+    if ( pixels == nullptr && attachment != GLenum::GL_DEPTH_COMPONENT ) {
+        glTexStorage2D( GLenum::GL_TEXTURE_2D, 1, (GLenum)attachment, w, h );
+        glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, (int)GL_NEAREST );
+        glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, (int)GL_NEAREST );
+    } else {
+        glTexImage2D( GLenum::GL_TEXTURE_2D, 0, depth, w, h, 0, (GLenum)attachment, GLenum::GL_UNSIGNED_BYTE, pixels );
         glTexParameteri( GL_TEXTURE_2D, GLenum::GL_TEXTURE_MAG_FILTER, (int)GL_NEAREST );
         glTexParameteri( GL_TEXTURE_2D, GLenum::GL_TEXTURE_MIN_FILTER, (int)GL_LINEAR );
-    } else {
-        glTexStorage2D( GLenum::GL_TEXTURE_2D, 1, (GLenum)depth, w, h );
     }
+    handles[AssetKey( GL_HANDLE_TYPE::TEXTURE, name )] = tex;
     glBindTexture( GLenum::GL_TEXTURE_2D, 0 );
     return true;
 }
@@ -261,7 +257,7 @@ bool nsfw::Assets::loadFBX( const char* name, const char* path ) {
 
     for ( unsigned int n = 0; n < fbx_file.getTextureCount(); ++n ) {
         FBXTexture* texture = fbx_file.getTextureByIndex( n );
-        string textureName = name + texture->name;
+        string textureName = texture->name;
         switch( texture->format ) {
             case 1:
             makeTexture( textureName.c_str(), texture->width, texture->height, (unsigned int)gl::GLenum::GL_R , (char*)texture->data );

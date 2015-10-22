@@ -223,7 +223,7 @@ unsigned int nsfw::Assets::compileShader( gl::GLenum type, const char* path ) {
 
         // Provide the infolog in whatever manor you deem best.
         // Exit with failure.
-        glDeleteShader( handle ); // Don't leak the shader.
+        glDeleteShader( handle );
         assert( false );
         return 0;
     }

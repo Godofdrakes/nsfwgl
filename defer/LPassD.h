@@ -47,10 +47,10 @@ public:
                     nsfw::UNIFORM::TYPE::FLO3,
                     glm::value_ptr( l.color ) );
 
-        setUniform( "uPositionTexture",
+        /*setUniform( "uPositionTexture",
                     nsfw::UNIFORM::TYPE::TEX2,
                     position,
-                    0 );
+                    0 );*/
         setUniform( "uNormalTexture",
                     nsfw::UNIFORM::TYPE::TEX2,
                     normal,

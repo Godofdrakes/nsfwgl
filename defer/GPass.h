@@ -4,39 +4,64 @@
 
 #include "Camera.h"
 #include "Geometry.h"
+#include "glbinding/gl/gl.h"
 
 class GPass : public nsfw::RenderPass {
 
 
 public:
+    GPass( const char* shaderName, const char* fboName ) : RenderPass( shaderName, fboName ) {}
+
     void prep() {
-#pragma message ( __WARN__ "glUseProgram, glClear, glBindFrameBuffer, glViewPort, glEnable etc...")
+        using namespace gl;
+        glBindFramebuffer( GLenum::GL_FRAMEBUFFER , *fbo );
+        glEnable( GLenum::GL_DEPTH_TEST );
+        glClearColor( 0.f, 0.f, 0.f, 1.f );
+        glClear( ClearBufferMask::GL_COLOR_BUFFER_BIT | ClearBufferMask::GL_DEPTH_BUFFER_BIT );
+        glUseProgram( *shader );
     }
 
     void post() {
-#pragma message ( __WARN__ "Unset any gl settings")
+        using namespace gl;
+        glBindVertexArray( 0 );
+        glUseProgram( 0 );
+        glDisable( GLenum::GL_DEPTH_TEST );
+        glBindFramebuffer( GLenum::GL_FRAMEBUFFER, 0 );
     }
 
-    GPass( const char* shaderName, const char* fboName ) : RenderPass( shaderName, fboName ) {}
-
     void draw( const Camera& c, const Geometry& g ) {
-        setUniform( "Projection", nsfw::UNIFORM::TYPE::MAT4, glm::value_ptr( c.getProjection() ) );
-        setUniform( "View", nsfw::UNIFORM::TYPE::MAT4, glm::value_ptr( c.getView() ) );
-        setUniform( "Model", nsfw::UNIFORM::TYPE::MAT4, glm::value_ptr( g.transform ) );
+        using namespace gl;
+        setUniform( "uProjection",
+                    nsfw::UNIFORM::TYPE::MAT4,
+                    glm::value_ptr( c.getProjection() ) );
+        setUniform( "uView",
+                    nsfw::UNIFORM::TYPE::MAT4,
+                    glm::value_ptr( c.getView() ) );
+        /*setUniform( "uModel",
+                    nsfw::UNIFORM::TYPE::MAT4,
+                    glm::value_ptr( g.transform ) );*/
 
-        setUniform( "Diffuse", nsfw::UNIFORM::TEX2, g.diffuse, 0 );
-        setUniform( "Normal", nsfw::UNIFORM::TEX2, g.normal, 1 );
-        setUniform( "Specular", nsfw::UNIFORM::TEX2, g.specular, 2 );
+        setUniform( "uDiffuse",
+                    nsfw::UNIFORM::TEX2,
+                    g.diffuse );
+        /*setUniform( "Normal",
+                    nsfw::UNIFORM::TEX2,
+                    g.normal,
+                    1 );
+        setUniform( "Specular",
+                    nsfw::UNIFORM::TEX2,
+                    g.specular,
+                    2 );
 
-        setUniform( "SpecularPower", nsfw::UNIFORM::FLO1, ( void* )&g.specPower );
+        setUniform( "SpecularPower",
+                    nsfw::UNIFORM::FLO1,
+                    ( void* )&g.specPower );*/
 
+        glBindVertexArray( *g.mesh );
+        glDrawElements( GLenum::GL_TRIANGLES,
+                        *g.tris,
+                        GL_UNSIGNED_INT,
+                        0 );
 
-        nsfw::Assets::instance().get( g.mesh );
-        nsfw::Assets::instance().get( g.tris );
-
-        *g.mesh;
-        *g.tris;
-
-#pragma message ( __WARN__ "bindVAO and Draw Elements!")
     }
 };

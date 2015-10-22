@@ -60,9 +60,9 @@ void DeferredApplication::onPlay() {
 
     m_soulspear->mesh = "Soulspear";
     m_soulspear->tris = "Soulspear";
-    m_soulspear->diffuse = "SoulspearDiffuse"; // loadFBX will need to name every handle it creates,
-    m_soulspear->normal = "SoulspearNormal"; // These handle names may not be what your loadFBX sets 
-    m_soulspear->specular = "SoulspearSpecular"; // them as! (Assets will report what the key names are though)
+    m_soulspear->diffuse = "soulspear_diffuse.tga"; // loadFBX will need to name every handle it creates,
+    m_soulspear->normal = "soulspear_normal.tga"; // These handle names may not be what your loadFBX sets 
+    m_soulspear->specular = "soulspear_specular.tga"; // them as! (Assets will report what the key names are though)
     m_soulspear->specPower = 40.0f;
     m_soulspear->transform = mat4( 1 );
 

@@ -11,11 +11,11 @@ out vec2 vTexCoord;
 
 uniform mat4 uProjection;
 uniform mat4 uView;
-//uniform mat4 uModel;
 
 void main() {
     vPosition = uView * Position;
-    vNormal = normalize( uView * Position );
+    vNormal = normalize( uView * Normal );
     vTexCoord = TexCoord;
     gl_Position = uProjection * uView * Position;
+    //gl_Position = vec4((uProjection * uView * Position).xy, 0, 1);
 }

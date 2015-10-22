@@ -15,11 +15,13 @@ public:
 
 
     void prep() {
+        using namespace nsfw;
         using namespace gl;
-        glBindFramebuffer( GLenum::GL_FRAMEBUFFER, *fbo );
+        unsigned int value = Assets::instance().get( fbo );
+        glBindFramebuffer( GLenum::GL_FRAMEBUFFER, value );
         glClearColor( 1.f, 1.f, 1.f, 1.f );
         glClear( ClearBufferMask::GL_COLOR_BUFFER_BIT );
-        glUseProgram( *shader );
+        glUseProgram( Assets::instance().get( shader ) );
     }
 
     void post() {
@@ -31,9 +33,10 @@ public:
 
 
     void draw() {
+        using namespace nsfw;
         using namespace gl;
         setUniform( "uAlbedoTexture",
-                    nsfw::UNIFORM::TEX2,
+                    UNIFORM::TEX2,
                     albedo,
                     0 );
         /*setUniform( "uPositionTexture",
@@ -49,7 +52,7 @@ public:
                     depth,
                     3 );*/
         setUniform( "uLightTexture",
-                    nsfw::UNIFORM::TEX2,
+                    UNIFORM::TEX2,
                     light,
                     4 );
 
@@ -57,9 +60,9 @@ public:
                     nsfw::UNIFORM::MAT4,
                     glm::value_ptr( nsfw::Window::instance().getTexelAdjustmentMatrix() ) );*/
 
-        glBindVertexArray( nsfw::Assets::instance().get<nsfw::ASSET::VAO>( "Quad" ) );
+        glBindVertexArray( Assets::instance().get<VAO>( "Quad" ) );
         glDrawElements( GLenum::GL_TRIANGLES,
-                        nsfw::Assets::instance().get<nsfw::ASSET::SIZE>( "Quad" ),
+                        Assets::instance().get<SIZE>( "Quad" ),
                         GL_UNSIGNED_INT,
                         0 );
     }

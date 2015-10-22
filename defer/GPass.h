@@ -13,12 +13,14 @@ public:
     GPass( const char* shaderName, const char* fboName ) : RenderPass( shaderName, fboName ) {}
 
     void prep() {
+        using namespace nsfw;
         using namespace gl;
-        glBindFramebuffer( GLenum::GL_FRAMEBUFFER , *fbo );
         glEnable( GLenum::GL_DEPTH_TEST );
-        glClearColor( 0.f, 0.f, 0.f, 1.f );
+        unsigned int value = Assets::instance().get( fbo );
+        glBindFramebuffer( GLenum::GL_FRAMEBUFFER, value );
+        glClearColor( 1.f, 0.f, 0.f, 1.f );
         glClear( ClearBufferMask::GL_COLOR_BUFFER_BIT | ClearBufferMask::GL_DEPTH_BUFFER_BIT );
-        glUseProgram( *shader );
+        glUseProgram( Assets::instance().get( shader ) );
     }
 
     void post() {
@@ -30,20 +32,22 @@ public:
     }
 
     void draw( const Camera& c, const Geometry& g ) {
+        using namespace nsfw;
         using namespace gl;
         setUniform( "uProjection",
-                    nsfw::UNIFORM::TYPE::MAT4,
+                    UNIFORM::TYPE::MAT4,
                     glm::value_ptr( c.getProjection() ) );
         setUniform( "uView",
-                    nsfw::UNIFORM::TYPE::MAT4,
+                    UNIFORM::TYPE::MAT4,
                     glm::value_ptr( c.getView() ) );
         /*setUniform( "uModel",
                     nsfw::UNIFORM::TYPE::MAT4,
                     glm::value_ptr( g.transform ) );*/
 
+        /*unsigned int value = Assets::instance().get( g.diffuse );
         setUniform( "uDiffuse",
-                    nsfw::UNIFORM::TEX2,
-                    g.diffuse );
+                    UNIFORM::TEX2,
+                    g.diffuse );*/
         /*setUniform( "Normal",
                     nsfw::UNIFORM::TEX2,
                     g.normal,
@@ -57,9 +61,9 @@ public:
                     nsfw::UNIFORM::FLO1,
                     ( void* )&g.specPower );*/
 
-        glBindVertexArray( *g.mesh );
+        glBindVertexArray( Assets::instance().get( g.mesh ) );
         glDrawElements( GLenum::GL_TRIANGLES,
-                        *g.tris,
+                        Assets::instance().get( g.tris ),
                         GL_UNSIGNED_INT,
                         0 );
 

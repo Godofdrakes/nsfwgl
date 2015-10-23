@@ -18,7 +18,7 @@ public:
         glEnable( GLenum::GL_DEPTH_TEST );
         unsigned int value = Assets::instance().get( fbo );
         glBindFramebuffer( GLenum::GL_FRAMEBUFFER, value );
-        glClearColor( 1.f, 0.f, 0.f, 1.f );
+        glClearColor( 0.f, 0.f, 0.f, 0.f );
         glClear( ClearBufferMask::GL_COLOR_BUFFER_BIT | ClearBufferMask::GL_DEPTH_BUFFER_BIT );
         glUseProgram( Assets::instance().get( shader ) );
     }

@@ -54,7 +54,7 @@ public:
         setUniform( "uLightTexture",
                     UNIFORM::TEX2,
                     light,
-                    4 );
+                    1 );
 
         /*setUniform( "TexelScalar",
                     nsfw::UNIFORM::MAT4,

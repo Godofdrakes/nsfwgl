@@ -135,7 +135,7 @@ namespace nsfw {
         }
 
         const void* getUNIFORM( const AssetKey& key ) {
-            return handles.find( key )._Ptr;
+            return &handles.find( key )._Ptr->_Myval.second;
         }
 
 

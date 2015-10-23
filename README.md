@@ -1,4 +1,21 @@
 # nsfwgl
+[Original Project](https://github.com/esmelusina/nsfwgl)
+
+
+## Setup
+In *dep/glbinding* open *CMakeLists.txt* and change the following line:
+```
+    option(OPTION_BUILD_STATIC     "Build static libraries" OFF) # Old
+    option(OPTION_BUILD_STATIC     "Build static libraries" ON)  # Change to this
+```
+Then compile x86 builds of this and GLFW.
+
+You will also need libs of FBXLoader that do not implement any OpenGL code. [Download them from my dropbox here.](https://www.dropbox.com/sh/ev7ozg25y4ulixf/AACCvjGAvbZiXN2zzD3eC341a?dl=0)
+Place them into *dep/FBXFile*.
+
+
+## Original Readme
+
 Not suited for work, openGL.
 
 

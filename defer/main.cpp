@@ -28,19 +28,16 @@ void DeferredApplication::onInit() {
 
     // Setup FBOs
     const char* gpassTextureNames[] = { "GPassAlbedo","GPassPosition","GPassNormal","GPassDepth" };
-    const unsigned gpassDepths[] = { (unsigned int)GL_RGB8, (unsigned int)GL_RGB32F, (unsigned int)GL_RGB32F, (unsigned int)GL_DEPTH_COMPONENT }; // GL_RGB8, GL_RGB32, GL_RGB32, GL_DEPTH_COMPONENT
+    const GLenum gpassDepths[] = { GL_RGB8, GL_RGB32F, GL_RGB32F, GL_DEPTH_COMPONENT };
     a.makeFBO( "GeometryPass", w.getWidth(), w.getHeight(), 4, gpassTextureNames, gpassDepths );
 
     const char* lpassTextureNames[] = { "LPassColor" };
-    const unsigned lpassDepths[] = { (unsigned int)GL_RGB8 }; // GL_RGB8
+    const GLenum lpassDepths[] = { GL_RGB8 };
     a.makeFBO( "LightPass", w.getWidth(), w.getHeight(), 1, lpassTextureNames, lpassDepths );
 
     // Load Shaders
-    // TODO: Add shaders
-#pragma message ( __WARN__ "Add shaders!")
     a.loadShader( "GeometryPassPhong", "./Assets/Shaders/Geometry/Vertex.glsl", "./Assets/Shaders/Geometry/Fragment.glsl" );
     a.loadShader( "LightPassDirectional", "./Assets/Shaders/Lighting/Vertex.glsl", "./Assets/Shaders/Lighting/Fragment.glsl" );
-    //a.loadShader("LightPassPoint", "/path/to/lpass/Point/vertex", "/path/to/lpass/Point/fragment");
     a.loadShader( "CompPass", "./Assets/Shaders/Composite/Vertex.glsl", "./Assets/Shaders/Composite/Fragment.glsl" );
 
     // Load any other textures and geometry we want to use
@@ -48,16 +45,16 @@ void DeferredApplication::onInit() {
 }
 
 void DeferredApplication::onPlay() {
-#pragma message ( __WARN__ "Initialize our scene objects!")
     m_camera = new Camera;
     m_light = new LightD;
     m_soulspear = new Geometry;
 
-    m_camera->lookAt( glm::vec3( 10 ), glm::vec3( 0 ), glm::vec3( 0, 1, 0 ) );
+    m_camera->lookAt( glm::vec3( 5 ), glm::vec3( 0, 1, 0 ), glm::vec3( 0, 1, 0 ) );
 
-    m_light->color = glm::vec3( 1, 1, 1 );
-    m_light->direction = glm::normalize( glm::vec3( 1, 1, 0 ) );
+    m_light->color = glm::vec3( 1, 0, 1 ); // Make sure the light is coming from a direction that makes the world visible to the user
+    m_light->direction = glm::normalize( glm::vec3( 1, 0, 1 ) );
 
+#pragma message ( "Make sure the following names match the FBX file's output!" )
     m_soulspear->mesh = "Soulspear";
     m_soulspear->tris = "Soulspear";
     m_soulspear->diffuse = "soulspear_diffuse.tga"; // loadFBX will need to name every handle it creates,
@@ -66,20 +63,16 @@ void DeferredApplication::onPlay() {
     m_soulspear->specPower = 40.0f;
     m_soulspear->transform = mat4( 1 );
 
-#pragma message ( __WARN__ "Initialize our render passes!")
-
     m_geometryPass = new GPass( "GeometryPassPhong", "GeometryPass" );
     m_directionalLightPass = new LPassD( "LightPassDirectional", "LightPass" );
     m_compositePass = new CPass( "CompPass", "Screen" ); // Screen is defined in nsfw::Assets::init()
 }
 
 void DeferredApplication::onStep() {
-#pragma message ( __WARN__ "Update our game objects-- IF THEY EVEN DO ANYTHING")
     m_light->update();
     m_camera->update();
     m_soulspear->update();
 
-#pragma message ( __WARN__ "Draw all of our renderpasses!")
     m_geometryPass->prep();
     m_geometryPass->draw( *m_camera, *m_soulspear );
     m_geometryPass->post();

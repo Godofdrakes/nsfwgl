@@ -1,9 +1,9 @@
 #pragma once
 
 #include <glm\ext.hpp>
-using namespace glm;
 
 namespace nsfw {
+    using namespace glm;
     struct Vertex {
         glm::vec4 position;
         glm::vec4 normal;

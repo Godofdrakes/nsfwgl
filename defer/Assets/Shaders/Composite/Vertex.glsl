@@ -1,11 +1,13 @@
 #version 450 core
 
-layout( location = 0 ) in vec4 inPosition;
-layout( location = 1 ) in vec2 inTexCoord;
+layout( location=0 ) in vec4 Position;
+layout( location=1 ) in vec4 Normal;
+layout( location=2 ) in vec4 Tangent;
+layout( location=3 ) in vec2 TexCoord;
 
 out vec2 vTexCoord;
 
 void main() {
-    vTexCoord = inTexCoord;
-    gl_Position = inPosition;
+    vTexCoord = TexCoord;
+    gl_Position = Position;
 }

@@ -11,8 +11,8 @@ layout( location = 2 ) out vec3 gpassNormal;
 uniform sampler2D uDiffuse;
 
 void main() {
-    gpassAlbedo = vec3( 1 );
-    //gpassAlbedo = texture( uDiffuse, vTexCoord ).xyz;
+    //gpassAlbedo = vec3( 1 );
+    gpassAlbedo = texture( uDiffuse, vTexCoord ).xyz;
     gpassPosition = vPosition.xyz;
     gpassNormal = vNormal.xyz;
 }

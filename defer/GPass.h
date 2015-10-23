@@ -44,10 +44,9 @@ public:
                     nsfw::UNIFORM::TYPE::MAT4,
                     glm::value_ptr( g.transform ) );*/
 
-        /*unsigned int value = Assets::instance().get( g.diffuse );
         setUniform( "uDiffuse",
                     UNIFORM::TEX2,
-                    g.diffuse );*/
+                    g.diffuse );
         /*setUniform( "Normal",
                     nsfw::UNIFORM::TEX2,
                     g.normal,

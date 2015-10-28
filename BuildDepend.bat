@@ -6,6 +6,6 @@ cmake -B./dep/glfw/ -H./dep/glfw/
 Devenv ./dep/glfw/glfw.sln /Build Debug /project ALL_BUILD
 Devenv ./dep/glfw/glfw.sln /Build Release /project ALL_BUILD
 
-7z e ./dep/FBXFile.zip -o./dep/FBXFile/
+"./dep/7z.exe" e ./dep/FBXFile.zip -o./dep/FBXFile/
 
 pause

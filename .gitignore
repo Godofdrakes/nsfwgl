@@ -210,4 +210,4 @@ FakesAssemblies/
 GeneratedArtifacts/
 _Pvt_Extensions/
 ModelManifest.xml
-dep/FBXFile/
+dep/FBXFile/*.lib

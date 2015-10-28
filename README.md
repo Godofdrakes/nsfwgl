@@ -3,12 +3,7 @@
 
 
 ## Setup
-In *dep/glbinding* open *CMakeLists.txt* and change the following line:
-```
-    option(OPTION_BUILD_STATIC     "Build static libraries" OFF) # Old
-    option(OPTION_BUILD_STATIC     "Build static libraries" ON)  # Change to this
-```
-Then compile x86 builds of glbinding and and GLFW.
+After pulling down the repo run *BuildDepend.bat* in the repo's root directory. Make sure cmake and Visual Studio's Devenv are in your environment's path.
 
 You will also need libs of FBXLoader that do not implement any OpenGL code. [Download them from my dropbox here.](https://www.dropbox.com/sh/ev7ozg25y4ulixf/AACCvjGAvbZiXN2zzD3eC341a?dl=0)
 Place them into *dep/FBXFile*.

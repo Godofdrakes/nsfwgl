@@ -40,9 +40,9 @@ public:
         setUniform( "uView",
                     UNIFORM::TYPE::MAT4,
                     glm::value_ptr( c.getView() ) );
-        /*setUniform( "uModel",
+        setUniform( "uModel",
                     nsfw::UNIFORM::TYPE::MAT4,
-                    glm::value_ptr( g.transform ) );*/
+                    glm::value_ptr( g.transform ) );
 
         setUniform( "uDiffuse",
                     UNIFORM::TEX2,

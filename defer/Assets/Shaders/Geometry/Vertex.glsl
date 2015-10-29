@@ -9,13 +9,13 @@ out vec4 vPosition;
 out vec4 vNormal;
 out vec2 vTexCoord;
 
-uniform mat4 uProjection;
-uniform mat4 uView;
+uniform mat4 uProjection = mat4( 1 );
+uniform mat4 uView       = mat4( 1 );
+uniform mat4 uModel      = mat4( 1 );
 
 void main() {
-    vPosition = uView * Position;
-    vNormal = normalize( uView * Normal );
+    vPosition = uView * uModel * Position;
+    vNormal = normalize( uView * uModel * Normal );
     vTexCoord = TexCoord;
-    gl_Position = uProjection * uView * Position;
-    //gl_Position = vec4((uProjection * uView * Position).xy, 0, 1);
+    gl_Position = uProjection * uView * uModel * Position;
 }

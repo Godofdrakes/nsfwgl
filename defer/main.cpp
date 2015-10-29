@@ -47,7 +47,7 @@ void DeferredApplication::onInit() {
 void DeferredApplication::onPlay() {
     m_camera = new Camera;
     m_light = new LightD;
-    m_soulspear = new Geometry;
+    m_soulspear = new Geometry[2];
 
     m_camera->lookAt( glm::vec3( 5 ), glm::vec3( 0, 1, 0 ), glm::vec3( 0, 1, 0 ) );
 
@@ -62,6 +62,21 @@ void DeferredApplication::onPlay() {
     m_soulspear->specular = "soulspear_specular.tga"; // them as! (Assets will report what the key names are though)
     m_soulspear->specPower = 40.0f;
     m_soulspear->transform = mat4( 1 );
+    m_soulspear[0].mesh = "Soulspear";
+    m_soulspear[0].tris = "Soulspear";
+    m_soulspear[0].diffuse = "soulspear_diffuse.tga"; // loadFBX will need to name every handle it creates,
+    m_soulspear[0].normal = "soulspear_normal.tga"; // These handle names may not be what your loadFBX sets them as!
+    m_soulspear[0].specular = "soulspear_specular.tga"; // (Assets will report what the key names are though)
+    m_soulspear[0].specPower = 40.0f;
+    m_soulspear[0].transform = mat4( 1 );
+
+    m_soulspear[1].mesh = "Soulspear";
+    m_soulspear[1].tris = "Soulspear";
+    m_soulspear[1].diffuse = "soulspear_diffuse.tga";
+    m_soulspear[1].normal = "soulspear_normal.tga";
+    m_soulspear[1].specular = "soulspear_specular.tga";
+    m_soulspear[1].specPower = 40.0f;
+    m_soulspear[1].transform = translate( 5.f, 0.f, 0.f );
 
     m_geometryPass = new GPass( "GeometryPassPhong", "GeometryPass" );
     m_directionalLightPass = new LPassD( "LightPassDirectional", "LightPass" );
@@ -74,7 +89,8 @@ void DeferredApplication::onStep() {
     m_soulspear->update();
 
     m_geometryPass->prep();
-    m_geometryPass->draw( *m_camera, *m_soulspear );
+    m_geometryPass->draw( *m_camera, m_soulspear[0] );
+    m_geometryPass->draw( *m_camera, m_soulspear[1] );
     m_geometryPass->post();
 
     m_directionalLightPass->prep();
@@ -89,7 +105,7 @@ void DeferredApplication::onStep() {
 void DeferredApplication::onTerm() {
     delete m_camera;
     delete m_light;
-    delete m_soulspear;
+    delete[] m_soulspear;
 
     delete m_compositePass;
     delete m_geometryPass;

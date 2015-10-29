@@ -11,7 +11,7 @@ public:
         RenderPass( shaderName, fboName ),
         normal( "GPassNormal" ) {}
 
-    void prep() {
+    virtual void prep() override {
         using namespace nsfw;
         using namespace gl;
         unsigned int value = Assets::instance().get( fbo );
@@ -23,7 +23,7 @@ public:
         glUseProgram( Assets::instance().get( shader ) );
     }
 
-    void post() {
+    virtual void post() override {
         using namespace gl;
         glBindVertexArray( 0 );
         glUseProgram( 0 );
@@ -31,17 +31,16 @@ public:
         glBindFramebuffer( GLenum::GL_FRAMEBUFFER, 0 );
     }
 
-
     void draw( const Camera& c, const LightD& l ) {
         using namespace nsfw;
         using namespace gl;
 
         setUniform( "uLightDirection",
                     UNIFORM::TYPE::FLO3,
-                    glm::value_ptr( l.direction ) );
+                    value_ptr( l.direction ) );
         setUniform( "uLightDiffuse",
                     UNIFORM::TYPE::FLO3,
-                    glm::value_ptr( l.color ) );
+                    value_ptr( l.color ) );
 
         setUniform( "uNormalTexture",
                     UNIFORM::TYPE::TEX2,

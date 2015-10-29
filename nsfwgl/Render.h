@@ -27,6 +27,8 @@ namespace nsfw {
         Asset<ASSET::SHADER> shader; // All RPs also use a shader!
 
     public:
+        virtual ~RenderPass() {}
+
         RenderPass( Asset<ASSET::SHADER> a_shader, Asset<ASSET::FBO> a_fbo ) : shader( a_shader ), fbo( a_fbo ) {}
 
         // uniforms could be set in prep, elsewhere in the application, or in the draw

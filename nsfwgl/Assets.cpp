@@ -389,7 +389,7 @@ void nsfw::Assets::init() {
 
     // Fallback assets
     const std::vector<char> white( { ( char )255, ( char )255, ( char )255, ( char )255 } );
-    const std::vector<char> black( { 0, 0, 0, (char)255 } );
+    const std::vector<char> black( { 0, 0, 0, ( char )255 } );
     makeTexture( "Fallback_White", 1, 1, gl::GLenum::GL_RGBA, white.data() );
     makeTexture( "Fallback_Black", 1, 1, gl::GLenum::GL_RGBA, black.data() );
 }

@@ -18,7 +18,7 @@ bool nsfw::RenderPass::setUniform( const char* name, nsfw::UNIFORM::TYPE type, c
             glUniform4fv( location, count, ( float* )value );
             break;
         case nsfw::UNIFORM::MAT4:
-            glUniformMatrix4fv( location, count, GLboolean::GL_FALSE, (float*)value );
+            glUniformMatrix4fv( location, count, GLboolean::GL_FALSE, ( float* )value );
             break;
         case nsfw::UNIFORM::INT1:
             glUniform1iv( location, count, ( int* )value );
@@ -26,7 +26,7 @@ bool nsfw::RenderPass::setUniform( const char* name, nsfw::UNIFORM::TYPE type, c
         case nsfw::UNIFORM::TEX2:
             glUniform1i( location, count );
             glActiveTexture( GL_TEXTURE0 + count );
-            glBindTexture( GL_TEXTURE_2D, *(GLuint*)value );
+            glBindTexture( GL_TEXTURE_2D, *( GLuint* )value );
             break;
         default:
             assert( false && "INVALID Uniform type." );
@@ -38,10 +38,10 @@ bool nsfw::RenderPass::setUniform( const char* name, nsfw::UNIFORM::TYPE type, c
 
 // set GL state settings and globally accessible uniforms! Should be called before rendering occurs!
 void nsfw::RenderPass::prep() {
-    #pragma message ( "Override and setup the card for this render")
+#pragma message ( "Override and setup the card for this render")
 }
 
 // reset the GL state- undo what we did just in case.
 void nsfw::RenderPass::post() {
-    #pragma message ( "Override and undo all sets in prep")
+#pragma message ( "Override and undo all sets in prep")
 }

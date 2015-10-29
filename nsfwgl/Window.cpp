@@ -2,9 +2,6 @@
 #include <GLFW/glfw3.h>
 
 void nsfw::Window::init( unsigned width, unsigned height ) {
-//#pragma message ( __WARN__ "Should create and set an active windowing context. ONLY GLFW! No GL!" )
-    //using namespace gl;
-
     this->width = width;
     this->height = height;
 
@@ -27,7 +24,7 @@ void nsfw::Window::term() {
 }
 
 float nsfw::Window::getTime() const {
-    return (float)glfwGetTime();
+    return ( float )glfwGetTime();
 }
 
 bool nsfw::Window::getKey( unsigned k ) const {

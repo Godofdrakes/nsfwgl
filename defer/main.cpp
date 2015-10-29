@@ -36,9 +36,15 @@ void DeferredApplication::onInit() {
     a.makeFBO( "LightPass", w.getWidth(), w.getHeight(), 1, lpassTextureNames, lpassDepths );
 
     // Load Shaders
-    a.loadShader( "GeometryPassPhong", "./Assets/Shaders/Geometry/Vertex.glsl", "./Assets/Shaders/Geometry/Fragment.glsl" );
-    a.loadShader( "LightPassDirectional", "./Assets/Shaders/Lighting/Vertex.glsl", "./Assets/Shaders/Lighting/Fragment.glsl" );
-    a.loadShader( "CompPass", "./Assets/Shaders/Composite/Vertex.glsl", "./Assets/Shaders/Composite/Fragment.glsl" );
+    a.loadShader( "GeometryPassPhong",
+                  "./Assets/Shaders/Geometry/Vertex.glsl",
+                  "./Assets/Shaders/Geometry/Fragment.glsl" );
+    a.loadShader( "LightPassDirectional",
+                  "./Assets/Shaders/Lighting/Global_Directional/Vertex.glsl",
+                  "./Assets/Shaders/Lighting/Global_Directional/Fragment.glsl" );
+    a.loadShader( "CompPass",
+                  "./Assets/Shaders/Composite/Vertex.glsl",
+                  "./Assets/Shaders/Composite/Fragment.glsl" );
 
     // Load any other textures and geometry we want to use
     a.loadFBX( "Soulspear", "./Assets/FBX/SoulSpear/soulspear.fbx" );
@@ -49,19 +55,12 @@ void DeferredApplication::onPlay() {
     m_light = new LightD;
     m_soulspear = new Geometry[2];
 
-    m_camera->lookAt( glm::vec3( 5 ), glm::vec3( 0, 1, 0 ), glm::vec3( 0, 1, 0 ) );
+    m_camera->lookAt( vec3( 0.f, 2.5f, -5.f ), vec3( 0.f, 2.5f, 0.f ), vec3( 0.f, 1.f, 0.f ) );
 
-    m_light->color = glm::vec3( 1, 0, 1 ); // Make sure the light is coming from a direction that makes the world visible to the user
-    m_light->direction = glm::normalize( glm::vec3( 1, 0, 1 ) );
+    m_light->color = vec3( 1.0f, 1.0f, 1.0f ); // Make sure the light is coming from a direction that makes the world visible to the user
+    m_light->direction = normalize( vec3( 0.f, 1.f, 1.f ) );
 
 #pragma message ( "Make sure the following names match the FBX file's output!" )
-    m_soulspear->mesh = "Soulspear";
-    m_soulspear->tris = "Soulspear";
-    m_soulspear->diffuse = "soulspear_diffuse.tga"; // loadFBX will need to name every handle it creates,
-    m_soulspear->normal = "soulspear_normal.tga"; // These handle names may not be what your loadFBX sets 
-    m_soulspear->specular = "soulspear_specular.tga"; // them as! (Assets will report what the key names are though)
-    m_soulspear->specPower = 40.0f;
-    m_soulspear->transform = mat4( 1 );
     m_soulspear[0].mesh = "Soulspear";
     m_soulspear[0].tris = "Soulspear";
     m_soulspear[0].diffuse = "soulspear_diffuse.tga"; // loadFBX will need to name every handle it creates,
@@ -85,6 +84,7 @@ void DeferredApplication::onPlay() {
 
 void DeferredApplication::onStep() {
     m_light->update();
+    m_light->direction = normalize( vec3( sin( Window::instance().getTime() ) * 5.f, 1.f, 1.f ) );
     m_camera->update();
     m_soulspear->update();
 

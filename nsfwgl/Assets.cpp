@@ -80,11 +80,11 @@ bool nsfw::Assets::makeVAO( const char* name, const Vertex* verts, unsigned vsiz
     glEnableVertexAttribArray( 0 );
     glVertexAttribPointer( 0, 4, GLenum::GL_FLOAT, GLboolean::GL_FALSE, sizeof( Vertex), 0 );
     glEnableVertexAttribArray( 1 );
-    glVertexAttribPointer( 1, 4, GLenum::GL_FLOAT, GLboolean::GL_FALSE, sizeof( Vertex), ( void* )( sizeof( glm::vec4) * 1 ) );
+    glVertexAttribPointer( 1, 4, GLenum::GL_FLOAT, GLboolean::GL_FALSE, sizeof( Vertex), ( void* )(sizeof( glm::vec4) * 1) );
     glEnableVertexAttribArray( 2 );
-    glVertexAttribPointer( 2, 4, GLenum::GL_FLOAT, GLboolean::GL_FALSE, sizeof( Vertex), ( void* )( sizeof( glm::vec4) * 2 ) );
+    glVertexAttribPointer( 2, 4, GLenum::GL_FLOAT, GLboolean::GL_FALSE, sizeof( Vertex), ( void* )(sizeof( glm::vec4) * 2) );
     glEnableVertexAttribArray( 3 );
-    glVertexAttribPointer( 3, 2, GLenum::GL_FLOAT, GLboolean::GL_FALSE, sizeof( Vertex), ( void* )( sizeof( glm::vec4) * 3 ) );
+    glVertexAttribPointer( 3, 2, GLenum::GL_FLOAT, GLboolean::GL_FALSE, sizeof( Vertex), ( void* )(sizeof( glm::vec4) * 3) );
 
     glGenBuffers( 1, &glHandle_ibo );
     assert( glHandle_ibo != 0 );
@@ -228,7 +228,7 @@ bool nsfw::Assets::loadShader( const char* name, const char* vpath, const char* 
         glGetProgramInfoLog( program, infoLogSize, 0, infoLog );
         cout << "Error: Failed to link shader program!" << endl;
         cout << infoLog << endl;
-        delete[]( infoLog );
+        delete[](infoLog);
         glDeleteProgram( program ); // CLEAN UP YOUR SHIT
         assert( false );
     }
@@ -386,13 +386,18 @@ void nsfw::Assets::init() {
     setINTERNAL( FBO, "Screen", 0 );
     makeVAO( "Cube", CubeVerts, 24, CubeTris, 36 );
     makeVAO( "Quad", QuadVerts, 4, QuadTris, 6 );
-#pragma message ("Maybe add a default texture?")
+
+    // Fallback assets
+    const std::vector<char> white( { ( char )255, ( char )255, ( char )255, ( char )255 } );
+    const std::vector<char> black( { 0, 0, 0, (char)255 } );
+    makeTexture( "Fallback_White", 1, 1, gl::GLenum::GL_RGBA, white.data() );
+    makeTexture( "Fallback_Black", 1, 1, gl::GLenum::GL_RGBA, black.data() );
 }
 
 void nsfw::Assets::term() {
 #pragma message ( "CLEAN UP AFTER YOURSELF YOUNG MAN" )
     using namespace gl;
-    for each ( std::pair<AssetKey,unsigned> k in handles ) {
+    for each ( std::pair<AssetKey, unsigned> k in handles ) {
         switch ( k.first.first ) {
             case VBO:
                 glDeleteBuffers( 1, &k.second );

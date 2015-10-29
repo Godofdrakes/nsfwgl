@@ -4,12 +4,11 @@
 #include "Camera.h"
 
 class LPassD : public nsfw::RenderPass {
-    nsfw::Asset<nsfw::ASSET::TEXTURE> position, normal;
+    nsfw::Asset<TEXTURE> normal;
 
 public:
     LPassD( const char* shaderName, const char* fboName ) :
         RenderPass( shaderName, fboName ),
-        position( "GPassPosition" ),
         normal( "GPassNormal" ) {}
 
     void prep() {
@@ -36,12 +35,6 @@ public:
     void draw( const Camera& c, const LightD& l ) {
         using namespace nsfw;
         using namespace gl;
-        /*setUniform( "Projection",
-                    nsfw::UNIFORM::TYPE::MAT4,
-                    glm::value_ptr( c.getProjection() ) );
-        setUniform( "View",
-                    nsfw::UNIFORM::TYPE::MAT4,
-                    glm::value_ptr( c.getView() ) );*/
 
         setUniform( "uLightDirection",
                     UNIFORM::TYPE::FLO3,
@@ -50,20 +43,10 @@ public:
                     UNIFORM::TYPE::FLO3,
                     glm::value_ptr( l.color ) );
 
-        /*setUniform( "uPositionTexture",
-                    nsfw::UNIFORM::TYPE::TEX2,
-                    position,
-                    0 );*/
         setUniform( "uNormalTexture",
                     UNIFORM::TYPE::TEX2,
                     normal,
                     1 );
-
-        /*setUniform( "TexelScalar",
-                    nsfw::UNIFORM::MAT4,
-                    glm::value_ptr( nsfw::Window::instance().getTexelAdjustmentMatrix() ) );*/
-
-    //#pragma message( __ERR__ "Bind uPositionTexture and uNormalTexture" )
 
         glBindVertexArray( Assets::instance().get<VAO>( "Quad" ) );
         glDrawElements( GLenum::GL_TRIANGLES,

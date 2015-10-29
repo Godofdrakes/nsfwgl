@@ -17,7 +17,7 @@ public:
         using namespace gl;
         unsigned int value = Assets::instance().get( fbo );
         glBindFramebuffer( GLenum::GL_FRAMEBUFFER, value );
-        glClearColor( 1.f, 1.f, 1.f, 1.f );
+        glClearColor( 0.f, 0.f, 0.f, 1.f );
         glClear( ClearBufferMask::GL_COLOR_BUFFER_BIT );
         glEnable( GLenum::GL_BLEND );
         glBlendFunc( GL_ONE, GL_ONE );

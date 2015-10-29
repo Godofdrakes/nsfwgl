@@ -12,6 +12,6 @@ uniform sampler2D uPositionTexture;
 void main() {
     vec3 normal = normalize( texture( uNormalTexture, vTexCoord ).xyz );
     vec3 position = texture( uPositionTexture, vTexCoord ).xyz;
-    float d = max( 0, dot( normal, -uLightDirection ) );
+    float d = max( 0, dot( normal, uLightDirection ) );
     LightOutput = uLightDiffuse * d;
 }

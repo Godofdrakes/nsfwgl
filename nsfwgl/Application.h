@@ -45,7 +45,7 @@ namespace nsfw {
             glbinding::setCallbackMaskExcept( glbinding::CallbackMask::After, { "glGetError" } );
             glbinding::setAfterCallback( []( const glbinding::FunctionCall & ) {
                 using namespace gl;
-                gl::GLenum error = gl::glGetError();
+                GLenum error = glGetError();
                 if ( error != GL_NO_ERROR ) {
                     std::cout << "ERROR: " << std::hex << error << std::endl;
                     assert( false );

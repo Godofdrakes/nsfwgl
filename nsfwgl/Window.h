@@ -12,6 +12,7 @@ No OpenGL!!!
 #include <glm/glm.hpp>
 
 struct GLFWwindow;
+
 namespace nsfw {
     class Window {
         GLFWwindow* window;

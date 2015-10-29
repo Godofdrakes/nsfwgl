@@ -4,11 +4,12 @@
 
 namespace nsfw {
     using namespace glm;
+
     struct Vertex {
-        glm::vec4 position;
-        glm::vec4 normal;
-        glm::vec4 tangent;
-        glm::vec2 texCoord;
+        vec4 position;
+        vec4 normal;
+        vec4 tangent;
+        vec2 texCoord;
     };
 
     const vec4 up( 0, 1, 0, 0 );

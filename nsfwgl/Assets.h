@@ -47,7 +47,7 @@ namespace nsfw {
 
     extern const char* TYPE_NAMES[];
     // Use a handle type and name to use as an index for each asset
-    typedef std::pair<ASSET::GL_HANDLE_TYPE,std::string> AssetKey;
+    typedef std::pair<ASSET::GL_HANDLE_TYPE, std::string> AssetKey;
 
     // for explicitness
     typedef unsigned GL_HANDLE;
@@ -98,7 +98,7 @@ namespace nsfw {
         };
 
         // Store all of our keys in one place!
-        std::unordered_map<AssetKey,GL_HANDLE,Hash> handles;
+        std::unordered_map<AssetKey, GL_HANDLE, Hash> handles;
 
         Assets() {}
 

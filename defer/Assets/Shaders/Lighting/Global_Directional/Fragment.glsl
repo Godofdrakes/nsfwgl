@@ -10,7 +10,7 @@ struct DirectionalLight {
 };
 
 uniform DirectionalLight uDirectionalLight;
-uniform vec3 uAmbientLightColor = vec3( 1, 1, 1 );
+uniform vec3 uAmbientLightColor = vec3( 0.1, 0.1, 0.1 );
 uniform float uSpecularLightPower = 0;
 uniform vec3 uCameraPosition = vec3( 0, 0, -5 );
 uniform sampler2D uNormalTexture;

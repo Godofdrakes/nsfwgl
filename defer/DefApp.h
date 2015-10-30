@@ -7,7 +7,7 @@ struct Geometry;
 struct LightD;
 
 class GPass;
-class LPassD;
+class RenderPass_GlobalDirectionalLight;
 class CPass;
 
 class DeferredApplication : public nsfw::Application {
@@ -17,7 +17,7 @@ class DeferredApplication : public nsfw::Application {
 
     CPass* m_compositePass;
     GPass* m_geometryPass;
-    LPassD* m_directionalLightPass;
+    RenderPass_GlobalDirectionalLight* m_pass_GlobalDirectionalLight;
 
 public:
     virtual void onInit() override;

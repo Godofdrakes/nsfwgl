@@ -3,12 +3,13 @@
 #include "Light.h"
 #include "Camera.h"
 
-class LPassD : public nsfw::RenderPass {
-    nsfw::Asset<TEXTURE> normal;
+class RenderPass_GlobalDirectionalLight : public nsfw::RenderPass {
+    nsfw::Asset<TEXTURE> position, normal;
 
 public:
-    LPassD( const char* shaderName, const char* fboName ) :
+    RenderPass_GlobalDirectionalLight( const char* shaderName, const char* fboName ) :
         RenderPass( shaderName, fboName ),
+        position( "GPassPosition" ),
         normal( "GPassNormal" ) {}
 
     virtual void prep() override {
@@ -35,17 +36,36 @@ public:
         using namespace nsfw;
         using namespace gl;
 
-        setUniform( "uLightDirection",
+        setUniform( "uDirectionalLight.direction",
                     UNIFORM::TYPE::FLO3,
                     value_ptr( l.direction ) );
-        setUniform( "uLightDiffuse",
+        setUniform( "uDirectionalLight.color",
                     UNIFORM::TYPE::FLO3,
                     value_ptr( l.color ) );
+
+        setUniform( "uAmbientLightColor",
+                    UNIFORM::TYPE::FLO3,
+                    value_ptr( vec3( 0.1f, 0.1f, 0.1f ) ) );
+
+        float specular = 40; // TODO: Properly implement
+        setUniform( "uSpecularLightPower",
+                    UNIFORM::TYPE::FLO1,
+                    &specular );
+
+        setUniform( "uCameraPosition",
+                    UNIFORM::TYPE::FLO3,
+                    value_ptr( c.worldPosition ) );
 
         setUniform( "uNormalTexture",
                     UNIFORM::TYPE::TEX2,
                     normal,
+                    0 );
+        setUniform( "uNormalTexture",
+                    UNIFORM::TYPE::TEX2,
+                    position,
                     1 );
+
+        // TODO: Lighting looks wrong
 
         glBindVertexArray( Assets::instance().get<VAO>( "Quad" ) );
         glDrawElements( GLenum::GL_TRIANGLES,

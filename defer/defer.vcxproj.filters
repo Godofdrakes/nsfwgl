@@ -41,10 +41,10 @@
     <ClInclude Include="DefApp.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="LPassD.h">
+    <ClInclude Include="GPass.h">
       <Filter>Header Files\Passes</Filter>
     </ClInclude>
-    <ClInclude Include="GPass.h">
+    <ClInclude Include="RenderPass_GlobalDirectionalLight.h">
       <Filter>Header Files\Passes</Filter>
     </ClInclude>
   </ItemGroup>

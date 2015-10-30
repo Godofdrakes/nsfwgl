@@ -141,7 +141,7 @@
     <ClInclude Include="GPass.h" />
     <ClInclude Include="CPass.h" />
     <ClInclude Include="Light.h" />
-    <ClInclude Include="LPassD.h" />
+    <ClInclude Include="RenderPass_GlobalDirectionalLight.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

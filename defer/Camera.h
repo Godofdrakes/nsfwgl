@@ -8,8 +8,9 @@
 struct Camera {
     glm::mat4 transform;
     float near, far, aspect, fov;
+    glm::vec3 worldPosition;
 
-    Camera() : near( 0.1 ), far( 1000 ), aspect( nsfw::Window::instance().getWidth() / ( float )nsfw::Window::instance().getHeight() ), fov( 90 ) {}
+    Camera() : near( 0.1 ), far( 1000 ), aspect( nsfw::Window::instance().getWidth() / ( float )nsfw::Window::instance().getHeight() ), fov( 90 ), worldPosition( 0.f, 0.f, -5.f ) {}
 
     void update() {}
 

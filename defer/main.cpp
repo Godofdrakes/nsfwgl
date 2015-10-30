@@ -6,7 +6,7 @@
 
 #include "GPass.h"
 #include "CPass.h"
-#include "LPassD.h"
+#include "RenderPass_GlobalDirectionalLight.h"
 
 using namespace nsfw;
 
@@ -78,7 +78,7 @@ void DeferredApplication::onPlay() {
     m_soulspear[1].transform = translate( 5.f, 0.f, 0.f );
 
     m_geometryPass = new GPass( "GeometryPassPhong", "GeometryPass" );
-    m_directionalLightPass = new LPassD( "LightPassDirectional", "LightPass" );
+    m_pass_GlobalDirectionalLight = new RenderPass_GlobalDirectionalLight( "LightPassDirectional", "LightPass" );
     m_compositePass = new CPass( "CompPass", "Screen" ); // Screen is defined in nsfw::Assets::init()
 }
 
@@ -93,9 +93,9 @@ void DeferredApplication::onStep() {
     m_geometryPass->draw( *m_camera, m_soulspear[1] );
     m_geometryPass->post();
 
-    m_directionalLightPass->prep();
-    m_directionalLightPass->draw( *m_camera, *m_light );
-    m_directionalLightPass->post();
+    m_pass_GlobalDirectionalLight->prep();
+    m_pass_GlobalDirectionalLight->draw( *m_camera, *m_light );
+    m_pass_GlobalDirectionalLight->post();
 
     m_compositePass->prep();
     m_compositePass->draw();
@@ -109,5 +109,5 @@ void DeferredApplication::onTerm() {
 
     delete m_compositePass;
     delete m_geometryPass;
-    delete m_directionalLightPass;
+    delete m_pass_GlobalDirectionalLight;
 }

@@ -37,5 +37,5 @@ void main() {
         specularColor = uDirectionalLight.color * specularLight;
     }
 
-    LightOutput = uAmbientLightColor + diffuseColor * specularColor;
+    LightOutput = uAmbientLightColor + diffuseColor + specularColor;
 }

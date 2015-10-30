@@ -84,7 +84,7 @@ void DeferredApplication::onPlay() {
 
 void DeferredApplication::onStep() {
     m_light->update();
-    m_light->direction = normalize( vec3( sin( Window::instance().getTime() ) * 5.f, 1.f, 1.f ) );
+    m_light->direction = normalize( vec3( sin( Window::instance().getTime() ) * 5.f, 0.f, 1.f ) );
     m_camera->update();
     m_soulspear->update();
 

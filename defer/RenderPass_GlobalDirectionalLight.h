@@ -44,14 +44,17 @@ public:
                     UNIFORM::TYPE::FLO3,
                     value_ptr( l.color ) );
 
-        /*setUniform( "uAmbientLightColor",
-                    UNIFORM::TYPE::FLO3,
-                    value_ptr( vec3( 0.1f, 0.1f, 0.1f ) ) );*/
 
-        //float specular = 0; // TODO: Properly implement
-        //setUniform( "uSpecularLightPower",
-        //            UNIFORM::TYPE::FLO1,
-        //            &specular );
+        setUniform( "uAmbientLightColor",
+                    UNIFORM::TYPE::FLO3,
+                    value_ptr( vec3( 0.0f, 0.0f, 0.0f ) ) );
+
+
+        float specular = 0; // TODO: Properly implement
+        if ( Window::instance().getKey( 32 ) ) { specular = 128; }
+        setUniform( "uSpecularLightPower",
+                    UNIFORM::TYPE::FLO1,
+                    &specular );
 
 
         setUniform( "uCameraView",
@@ -65,7 +68,7 @@ public:
                     UNIFORM::TYPE::TEX2,
                     normal,
                     0 );
-        setUniform( "uNormalTexture",
+        setUniform( "uPositionTexture",
                     UNIFORM::TYPE::TEX2,
                     position,
                     1 );

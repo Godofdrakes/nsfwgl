@@ -10,7 +10,7 @@ struct DirectionalLight {
 };
 
 uniform DirectionalLight uDirectionalLight;
-uniform vec3 uAmbientLightColor = vec3( 0.1, 0.1, 0.1 );
+uniform vec3 uAmbientLightColor = vec3( 0.25, 0.25, 0.25 );
 uniform float uSpecularLightPower = 0;
 uniform mat4 uCameraView = mat4( 1 );
 uniform vec3 uCameraPosition = vec3( 0, 0, -5 );
@@ -39,5 +39,14 @@ void main() {
     //    specularColor = uDirectionalLight.color * specularLight;
     //}
 
-    LightOutput = uAmbientLightColor + diffuseColor; // + specularColor;
+	vec3 viewPointDirection = normalize(uCameraPosition - position);
+	vec3 halfVector = normalize(lightDirection + viewPointDirection);
+	float specularLight = pow(max(dot(normal, halfVector), 0), uSpecularLightPower);
+	if (diffuseLight <= 0)
+	{
+		specularLight = 0;
+	}
+	vec3 specularColor = uDirectionalLight.color * specularLight;
+
+    LightOutput = uAmbientLightColor + diffuseColor + specularColor;
 }

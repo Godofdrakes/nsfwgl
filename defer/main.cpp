@@ -58,7 +58,7 @@ void DeferredApplication::onPlay() {
     m_camera->lookAt( vec3( 0.f, 2.5f, -5.f ), vec3( 0.f, 2.5f, 0.f ), vec3( 0.f, 1.f, 0.f ) );
 
     m_light->color = vec3( 1.0f, 1.0f, 1.0f ); // Make sure the light is coming from a direction that makes the world visible to the user
-    m_light->direction = normalize( vec3( -1.f, 0.f, 1.f ) );
+    m_light->direction = normalize( vec3( 0.f, 0.f, -1.f ) );
 
 #pragma message ( "Make sure the following names match the FBX file's output!" )
     m_soulspear[0].mesh = "Soulspear";

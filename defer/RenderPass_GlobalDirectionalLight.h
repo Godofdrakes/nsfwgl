@@ -36,6 +36,7 @@ public:
         using namespace nsfw;
         using namespace gl;
 
+
         setUniform( "uDirectionalLight.direction",
                     UNIFORM::TYPE::FLO3,
                     value_ptr( l.direction ) );
@@ -43,18 +44,22 @@ public:
                     UNIFORM::TYPE::FLO3,
                     value_ptr( l.color ) );
 
-        setUniform( "uAmbientLightColor",
+        /*setUniform( "uAmbientLightColor",
                     UNIFORM::TYPE::FLO3,
-                    value_ptr( vec3( 0.1f, 0.1f, 0.1f ) ) );
+                    value_ptr( vec3( 0.1f, 0.1f, 0.1f ) ) );*/
 
-        float specular = 40; // TODO: Properly implement
-        setUniform( "uSpecularLightPower",
-                    UNIFORM::TYPE::FLO1,
-                    &specular );
+        //float specular = 0; // TODO: Properly implement
+        //setUniform( "uSpecularLightPower",
+        //            UNIFORM::TYPE::FLO1,
+        //            &specular );
 
-        setUniform( "uCameraPosition",
+
+        setUniform( "uCameraView",
+                    UNIFORM::TYPE::MAT4,
+                    value_ptr( c.getView() ) );
+        /*setUniform( "uCameraPosition",
                     UNIFORM::TYPE::FLO3,
-                    value_ptr( c.worldPosition ) );
+                    value_ptr( c.worldPosition ) );*/
 
         setUniform( "uNormalTexture",
                     UNIFORM::TYPE::TEX2,

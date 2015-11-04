@@ -23,8 +23,8 @@ int main() {
 
 void DeferredApplication::onInit() {
     using namespace gl;
-    auto& w = nsfw::Window::instance();
-    auto& a = nsfw::Assets::instance();
+    auto& w = Window::instance();
+    auto& a = Assets::instance();
 
     // Setup FBOs
     const char* gpassTextureNames[] = { "GPassAlbedo","GPassPosition","GPassNormal","GPassDepth" };
@@ -53,12 +53,12 @@ void DeferredApplication::onInit() {
 void DeferredApplication::onPlay() {
     m_camera = new Camera;
     m_light = new LightD;
-    m_soulspear = new Geometry[2];
+    m_soulspear = new Geometry[3];
 
     m_camera->lookAt( vec3( 0.f, 2.5f, -5.f ), vec3( 0.f, 2.5f, 0.f ), vec3( 0.f, 1.f, 0.f ) );
 
     m_light->color = vec3( 1.0f, 1.0f, 1.0f ); // Make sure the light is coming from a direction that makes the world visible to the user
-    m_light->direction = normalize( vec3( 0.f, 0.f, 1.f ) );
+    m_light->direction = normalize( vec3( -1.f, 0.f, 1.f ) );
 
 #pragma message ( "Make sure the following names match the FBX file's output!" )
     m_soulspear[0].mesh = "Soulspear";
@@ -77,6 +77,14 @@ void DeferredApplication::onPlay() {
     m_soulspear[1].specPower = 40.0f;
     m_soulspear[1].transform = translate( 5.f, 0.f, 0.f );
 
+    m_soulspear[2].mesh = "Soulspear";
+    m_soulspear[2].tris = "Soulspear";
+    m_soulspear[2].diffuse = "soulspear_diffuse.tga";
+    m_soulspear[2].normal = "soulspear_normal.tga";
+    m_soulspear[2].specular = "soulspear_specular.tga";
+    m_soulspear[2].specPower = 40.0f;
+    m_soulspear[2].transform = translate( -5.f, 0.f, 0.f );
+
     m_geometryPass = new GPass( "GeometryPassPhong", "GeometryPass" );
     m_pass_GlobalDirectionalLight = new RenderPass_GlobalDirectionalLight( "LightPassDirectional", "LightPass" );
     m_compositePass = new CPass( "CompPass", "Screen" ); // Screen is defined in nsfw::Assets::init()
@@ -84,13 +92,14 @@ void DeferredApplication::onPlay() {
 
 void DeferredApplication::onStep() {
     m_light->update();
-    m_light->direction = normalize( vec3( sin( Window::instance().getTime() ) * 5.f, m_light->direction.y, m_light->direction.z ) );
+    m_light->direction = normalize( vec3( sin( Window::instance().getTime() ), m_light->direction.y, m_light->direction.z ) );
     m_camera->update();
     m_soulspear->update();
 
     m_geometryPass->prep();
     m_geometryPass->draw( *m_camera, m_soulspear[0] );
     m_geometryPass->draw( *m_camera, m_soulspear[1] );
+    m_geometryPass->draw( *m_camera, m_soulspear[2] );
     m_geometryPass->post();
 
     m_pass_GlobalDirectionalLight->prep();

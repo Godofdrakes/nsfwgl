@@ -5,14 +5,13 @@ in vec4 vNormal;
 in vec2 vTexCoord;
 
 layout( location = 0 ) out vec3 gpassAlbedo;
-layout( location = 1 ) out vec3 gpassPosition;
+layout( location = 1 ) out vec4 gpassPosition;
 layout( location = 2 ) out vec3 gpassNormal;
 
-uniform sampler2D uDiffuse;
+uniform sampler2D uAlbedo;
 
 void main() {
-    //gpassAlbedo = vec3( 1 );
-    gpassAlbedo = texture( uDiffuse, vTexCoord ).xyz;
-    gpassPosition = vPosition.xyz;
+    gpassAlbedo = texture( uAlbedo, vTexCoord ).xyz;
+    gpassPosition = vPosition;
     gpassNormal = vNormal.xyz;
 }

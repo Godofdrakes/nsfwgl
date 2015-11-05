@@ -49,20 +49,18 @@ public:
                     UNIFORM::TYPE::FLO3,
                     value_ptr( vec3( 0.0f, 0.0f, 0.0f ) ) );
 
-
-        float specular = 0; // TODO: Properly implement
-        if ( Window::instance().getKey( 32 ) ) { specular = 128; }
-        setUniform( "uSpecularLightPower",
-                    UNIFORM::TYPE::FLO1,
-                    &specular );
-
+        //float specular = 0; // TODO: Properly implement
+        //if ( Window::instance().getKey( 32 ) ) { specular = 128; }
+        //setUniform( "uSpecularLightPower",
+        //            UNIFORM::TYPE::FLO1,
+        //            &specular );
 
         setUniform( "uCameraView",
                     UNIFORM::TYPE::MAT4,
                     value_ptr( c.getView() ) );
-        /*setUniform( "uCameraPosition",
+        setUniform( "uCameraPosition",
                     UNIFORM::TYPE::FLO3,
-                    value_ptr( c.worldPosition ) );*/
+                    value_ptr( c.worldPosition ) );
 
         setUniform( "uNormalTexture",
                     UNIFORM::TYPE::TEX2,
@@ -72,8 +70,6 @@ public:
                     UNIFORM::TYPE::TEX2,
                     position,
                     1 );
-
-        // TODO: Lighting looks wrong
 
         glBindVertexArray( Assets::instance().get<VAO>( "Quad" ) );
         glDrawElements( GLenum::GL_TRIANGLES,

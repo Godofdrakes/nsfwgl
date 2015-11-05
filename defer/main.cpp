@@ -28,7 +28,7 @@ void DeferredApplication::onInit() {
 
     // Setup FBOs
     const char* gpassTextureNames[] = { "GPassAlbedo","GPassPosition","GPassNormal","GPassDepth" };
-    const GLenum gpassDepths[] = { GL_RGB8, GL_RGB32F, GL_RGB32F, GL_DEPTH_COMPONENT };
+    const GLenum gpassDepths[] = { GL_RGB8, GL_RGBA32F, GL_RGB32F, GL_DEPTH_COMPONENT };
     a.makeFBO( "GeometryPass", w.getWidth(), w.getHeight(), 4, gpassTextureNames, gpassDepths );
 
     const char* lpassTextureNames[] = { "LPassColor" };
@@ -66,7 +66,7 @@ void DeferredApplication::onPlay() {
     m_soulspear[0].diffuse = "soulspear_diffuse.tga"; // loadFBX will need to name every handle it creates,
     m_soulspear[0].normal = "soulspear_normal.tga"; // These handle names may not be what your loadFBX sets them as!
     m_soulspear[0].specular = "soulspear_specular.tga"; // (Assets will report what the key names are though)
-    m_soulspear[0].specPower = 40.0f;
+    m_soulspear[0].specPower = 64.0f;
     m_soulspear[0].transform = mat4( 1 );
 
     m_soulspear[1].mesh = "Soulspear";
@@ -74,7 +74,7 @@ void DeferredApplication::onPlay() {
     m_soulspear[1].diffuse = "soulspear_diffuse.tga";
     m_soulspear[1].normal = "soulspear_normal.tga";
     m_soulspear[1].specular = "soulspear_specular.tga";
-    m_soulspear[1].specPower = 40.0f;
+    m_soulspear[1].specPower = 128.0f;
     m_soulspear[1].transform = translate( 5.f, 0.f, 0.f );
 
     m_soulspear[2].mesh = "Soulspear";
@@ -82,7 +82,7 @@ void DeferredApplication::onPlay() {
     m_soulspear[2].diffuse = "soulspear_diffuse.tga";
     m_soulspear[2].normal = "soulspear_normal.tga";
     m_soulspear[2].specular = "soulspear_specular.tga";
-    m_soulspear[2].specPower = 40.0f;
+    m_soulspear[2].specPower = 0.0f;
     m_soulspear[2].transform = translate( -5.f, 0.f, 0.f );
 
     m_geometryPass = new GPass( "GeometryPassPhong", "GeometryPass" );

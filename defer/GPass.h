@@ -43,7 +43,11 @@ public:
                     nsfw::UNIFORM::TYPE::MAT4,
                     glm::value_ptr( g.transform ) );
 
-        setUniform( "uDiffuse",
+        setUniform( "uSpecularLightPower",
+                    UNIFORM::FLO1,
+                    &g.specPower );
+
+        setUniform( "uAlbedo",
                     UNIFORM::TEX2,
                     g.diffuse );
 

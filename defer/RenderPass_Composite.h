@@ -5,7 +5,7 @@
 namespace nsfw {
     namespace rendering {
         class RenderPass_Composite : public RenderPass {
-            nsfw::Asset<TEXTURE> albedo, depth, light;
+            nsfw::Asset<ASSET::TEXTURE> albedo, depth, light;
 
         public:
             RenderPass_Composite( const char* shaderName, const char* fboName )
@@ -44,9 +44,9 @@ namespace nsfw {
                             light,
                             1 );
 
-                glBindVertexArray( Assets::instance().get<VAO>( "Quad" ) );
+                glBindVertexArray( Assets::instance().get<ASSET::VAO>( "Quad" ) );
                 glDrawElements( GLenum::GL_TRIANGLES,
-                                Assets::instance().get<SIZE>( "Quad" ),
+                                Assets::instance().get<ASSET::SIZE>( "Quad" ),
                                 GL_UNSIGNED_INT,
                                 0 );
             }

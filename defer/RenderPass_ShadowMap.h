@@ -5,7 +5,7 @@
 namespace nsfw {
     namespace rendering {
         class RenderPass_ShadowMap : public RenderPass {
-            Asset<TEXTURE> depth;
+            Asset<ASSET::TEXTURE> depth;
 
         public:
             RenderPass_ShadowMap( const char* shaderName, const char* fboName )
@@ -28,10 +28,9 @@ namespace nsfw {
 
             void draw() {
                 using namespace gl;
-
-                glBindVertexArray( Assets::instance().get<VAO>( "Quad" ) );
+                glBindVertexArray( Assets::instance().get<ASSET::VAO>( "Quad" ) );
                 glDrawElements( GLenum::GL_TRIANGLES,
-                                Assets::instance().get<SIZE>( "Quad" ),
+                                Assets::instance().get<ASSET::SIZE>( "Quad" ),
                                 GL_UNSIGNED_INT,
                                 0 );
             }

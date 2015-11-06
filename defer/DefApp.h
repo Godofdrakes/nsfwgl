@@ -7,17 +7,18 @@
 #include "RenderPass_PointLight.h"
 #include "RenderPass_ShadowMap.h"
 
-struct Camera;
-struct Geometry;
 struct LightD;
 
-class GPass;
-class CPass;
-
 namespace nsfw {
+    namespace camera {
+        class Camera;
+    }
+
+    class Geometry;
+
     namespace application {
         class DeferredApplication : public Application {
-            Camera* m_camera;
+            camera::Camera* m_camera;
             Geometry* m_soulspear;
             LightD* m_light;
 

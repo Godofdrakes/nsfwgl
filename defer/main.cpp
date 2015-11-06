@@ -2,7 +2,7 @@
 
 #include "Geometry.h"
 #include "Light.h"
-#include "Camera.h"
+#include "FlyCamera.h"
 
 #include "RenderPass_Geometry.h"
 #include "RenderPass_GlobalDirectionalLight.h"
@@ -52,17 +52,12 @@ namespace nsfw {
         }
 
         void DeferredApplication::onPlay() {
-            m_camera = new Camera( glm::vec3( 0, 0, 10 ) );
-            // m_camera->m_rotation = glm::vec3(0,90,0);
-
-            auto d = m_camera->GetWorldTransform();
-            /*m_camera->m_lookAt = true;
-            m_camera->m_scale = glm::vec3( 1, 6, 1 );*/
-            m_soulspear = new Geometry[3];
+            m_camera = new camera::FlyCamera( glm::vec3( 0, 0, 10 ) );
+            m_soulspear = new Geometry[4];
 
             m_light = new LightD;
             m_light->color = vec3( 1.0f, 1.0f, 1.0f ); // Make sure the light is coming from a direction that makes the world visible to the user
-            m_light->direction = normalize( vec3( 0.f, 0.f, -1.f ) );
+            m_light->direction = normalize( vec3( 0.f, 0.f, 1.f ) );
 
 #pragma message ( "Make sure the following names match the FBX file's output!" )
             m_soulspear[0].mesh = "Soulspear";
@@ -71,7 +66,7 @@ namespace nsfw {
             m_soulspear[0].normal = "soulspear_normal.tga"; // These handle names may not be what your loadFBX sets them as!
             m_soulspear[0].specular = "soulspear_specular.tga"; // (Assets will report what the key names are though)
             m_soulspear[0].specPower = 64.0f;
-            m_soulspear[0].transform = mat4( 1 );
+            m_soulspear[0].m_position = glm::vec3( 0, 0, 0 );
 
             m_soulspear[1].mesh = "Soulspear";
             m_soulspear[1].tris = "Soulspear";
@@ -79,7 +74,7 @@ namespace nsfw {
             m_soulspear[1].normal = "soulspear_normal.tga";
             m_soulspear[1].specular = "soulspear_specular.tga";
             m_soulspear[1].specPower = 128.0f;
-            m_soulspear[1].transform = translate( 5.f, 5.f, 0.f );
+            m_soulspear[1].m_position = glm::vec3( 5, 1, 0 );
 
             m_soulspear[2].mesh = "Soulspear";
             m_soulspear[2].tris = "Soulspear";
@@ -87,87 +82,44 @@ namespace nsfw {
             m_soulspear[2].normal = "soulspear_normal.tga";
             m_soulspear[2].specular = "soulspear_specular.tga";
             m_soulspear[2].specPower = 0.0f;
-            m_soulspear[2].transform = translate( -5.f, 0.f, 0.f );
+            m_soulspear[2].m_position = glm::vec3( -5, -1, 0 );
+
+            m_soulspear[3].mesh = "Quad";
+            m_soulspear[3].tris = "Quad";
+            m_soulspear[3].diffuse = "Fallback_White";
+            m_soulspear[3].normal = "Fallback_Black";
+            m_soulspear[3].specular = "Fallback_Black";
+            m_soulspear[3].specPower = 0.0f;
+            m_soulspear[3].m_position = glm::vec3( 0, -3, 0 );
+            m_soulspear[3].m_rotation = glm::vec3( 90.0f, 0.0f, 0.0f );
+            m_soulspear[3].m_scale = glm::vec3( 10, 10, 1 );
 
             m_geometryPass = new rendering::RenderPass_Geometry( "GeometryPassPhong", "GeometryPass" );
             m_pass_GlobalDirectionalLight = new rendering::RenderPass_GlobalDirectionalLight( "LightPassDirectional", "LightPass" );
             m_compositePass = new rendering::RenderPass_Composite( "CompPass", "Screen" ); // Screen is defined in nsfw::Assets::init()
         }
 
-        void DeferredApplication::onStep() { { // Camera Movement
-                bool w = Window::instance().getKey( 87 ),
-                        s = Window::instance().getKey( 83 ),
-                        a = Window::instance().getKey( 65 ),
-                        d = Window::instance().getKey( 68 ),
-                        q = Window::instance().getKey( 81 ),
-                        e = Window::instance().getKey( 69 );
-
-                vec3 movement( 0.0f, 0.0f, 0.0f );
-                float speed = 0.25f;
-
-                if ( w ) {
-                    movement.z = -speed;
-                }
-                else if ( s ) {
-                    movement.z = speed;
-                }
-                if ( a ) {
-                    movement.x = -speed;
-                }
-                else if ( d ) {
-                    movement.x = speed;
-                }
-                if ( q ) {
-                    movement.y = -speed;
-                }
-                else if ( e ) {
-                    movement.y = speed;
-                }
-
-                m_camera->m_position = m_camera->m_position + movement;
-
-                bool up = Window::instance().getKey( 265 ),
-                        down = Window::instance().getKey( 264 ),
-                        left = Window::instance().getKey( 263 ),
-                        right = Window::instance().getKey( 262 );
-
-                vec3 rotation( 0.0f, 0.0f, 0.0f );
-
-                if ( up ) {
-                    rotation.x = speed;
-                }
-                else if ( down ) {
-                    rotation.x = -speed;
-                }
-                if ( left ) {
-                    rotation.y = speed;
-                }
-                else if ( right ) {
-                    rotation.y = -speed;
-                }
-
-                m_camera->m_rotation = m_camera->m_rotation + rotation;
-
-            }
+        void DeferredApplication::onStep() {
 
             m_light->update();
             //m_light->direction = normalize( vec3( sin( Window::instance().getTime() ), m_light->direction.y, m_light->direction.z ) );
             m_camera->Update();
-            m_soulspear->update();
+            m_soulspear->Update();
 
             m_geometryPass->prep();
             m_geometryPass->draw( *m_camera, m_soulspear[0] );
             m_geometryPass->draw( *m_camera, m_soulspear[1] );
             m_geometryPass->draw( *m_camera, m_soulspear[2] );
+            m_geometryPass->draw( *m_camera, m_soulspear[3] );
             m_geometryPass->post();
 
-            /*m_pass_GlobalDirectionalLight->prep();
+            m_pass_GlobalDirectionalLight->prep();
             m_pass_GlobalDirectionalLight->draw( *m_camera, *m_light );
             m_pass_GlobalDirectionalLight->post();
 
             m_compositePass->prep();
             m_compositePass->draw();
-            m_compositePass->post();*/
+            m_compositePass->post();
         }
 
         void DeferredApplication::onTerm() {

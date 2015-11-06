@@ -6,7 +6,7 @@
 namespace nsfw {
     namespace rendering {
         class RenderPass_GlobalDirectionalLight : public RenderPass {
-            Asset<TEXTURE> position, normal;
+            Asset<ASSET::TEXTURE> position, normal;
 
         public:
             RenderPass_GlobalDirectionalLight( const char* shaderName, const char* fboName ) :
@@ -33,7 +33,7 @@ namespace nsfw {
                 glBindFramebuffer( GLenum::GL_FRAMEBUFFER, 0 );
             }
 
-            void draw( const Camera& c, const LightD& l ) {
+            void draw( const camera::Camera& c, const LightD& l ) {
                 using namespace gl;
 
                 setUniform( "uDirectionalLight.direction",
@@ -63,9 +63,9 @@ namespace nsfw {
                             position,
                             1 );
 
-                glBindVertexArray( Assets::instance().get<VAO>( "Quad" ) );
+                glBindVertexArray( Assets::instance().get<ASSET::VAO>( "Quad" ) );
                 glDrawElements( GLenum::GL_TRIANGLES,
-                                Assets::instance().get<SIZE>( "Quad" ),
+                                Assets::instance().get<ASSET::SIZE>( "Quad" ),
                                 GL_UNSIGNED_INT,
                                 0 );
             }

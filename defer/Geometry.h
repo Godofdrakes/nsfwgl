@@ -1,21 +1,34 @@
 #pragma once
 
-#include <glm\glm.hpp>
-#include "../nsfwgl/Assets.h"
+#include "Transform.h"
+#include "../nsfwgl/nsfw.h"
 
-using namespace nsfw::ASSET;
+namespace nsfw {
 
-struct Geometry {
-    glm::mat4 transform;
+    class Geometry : public Transform {
+    public:
+        nsfw::Asset<ASSET::VAO> mesh;
+        nsfw::Asset<ASSET::SIZE> tris;
 
-    nsfw::Asset<VAO> mesh;
-    nsfw::Asset<SIZE> tris;
+        nsfw::Asset<ASSET::TEXTURE> diffuse;
+        nsfw::Asset<ASSET::TEXTURE> normal;
+        nsfw::Asset<ASSET::TEXTURE> specular;
 
-    nsfw::Asset<TEXTURE> diffuse;
-    nsfw::Asset<TEXTURE> normal;
-    nsfw::Asset<TEXTURE> specular;
+        float specPower;
 
-    float specPower;
+        Geometry() : Geometry( "Quad", "", "", "", "", 0.0f ) {}
 
-    void update() {}
-};
+        Geometry( const nsfw::Asset<ASSET::VAO>& mesh, const nsfw::Asset<ASSET::SIZE>& tris, const nsfw::Asset<ASSET::TEXTURE>& diffuse, const nsfw::Asset<ASSET::TEXTURE>& normal, const nsfw::Asset<ASSET::TEXTURE>& specular, float specPower )
+            : mesh( mesh ),
+              tris( tris ),
+              diffuse( diffuse ),
+              normal( normal ),
+              specular( specular ),
+              specPower( specPower ) {}
+
+        virtual ~Geometry() {}
+
+        virtual void Update() {}
+    };
+
+}

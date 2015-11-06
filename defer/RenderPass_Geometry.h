@@ -17,7 +17,7 @@ namespace nsfw {
                 using namespace gl;
                 glEnable( GLenum::GL_DEPTH_TEST );
                 unsigned int value = Assets::instance().get( fbo );
-                //glBindFramebuffer( GLenum::GL_FRAMEBUFFER, value );
+                glBindFramebuffer( GLenum::GL_FRAMEBUFFER, value );
                 glClearColor( 0.f, 0.f, 0.f, 0.f );
                 glClear( ClearBufferMask::GL_COLOR_BUFFER_BIT | ClearBufferMask::GL_DEPTH_BUFFER_BIT );
                 glUseProgram( Assets::instance().get( shader ) );
@@ -31,7 +31,7 @@ namespace nsfw {
                 glBindFramebuffer( GLenum::GL_FRAMEBUFFER, 0 );
             }
 
-            void draw( const Camera& c, const Geometry& g ) {
+            void draw( const camera::Camera& c, const Geometry& g ) {
                 using namespace gl;
                 setUniform( "uProjection",
                             UNIFORM::TYPE::MAT4,
@@ -41,7 +41,7 @@ namespace nsfw {
                             glm::value_ptr( c.GetViewTransform() ) );
                 setUniform( "uModel",
                             UNIFORM::TYPE::MAT4,
-                            glm::value_ptr( g.transform ) );
+                            glm::value_ptr( g.GetWorldTransform() ) );
 
                 setUniform( "uSpecularLightPower",
                             UNIFORM::FLO1,

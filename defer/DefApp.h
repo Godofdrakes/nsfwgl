@@ -12,21 +12,18 @@ struct Geometry;
 struct LightD;
 
 class GPass;
-class RenderPass_GlobalDirectionalLight;
 class CPass;
 
 namespace nsfw {
     namespace application {
-        using namespace rendering;
-
         class DeferredApplication : public Application {
             Camera* m_camera;
             Geometry* m_soulspear;
             LightD* m_light;
 
-            RenderPass_Geometry* m_geometryPass;
-            RenderPass_GlobalDirectionalLight* m_pass_GlobalDirectionalLight;
-            RenderPass_Composite* m_compositePass;
+            rendering::RenderPass_Geometry* m_geometryPass;
+            rendering::RenderPass_GlobalDirectionalLight* m_pass_GlobalDirectionalLight;
+            rendering::RenderPass_Composite* m_compositePass;
 
         public:
             virtual void onInit() override;

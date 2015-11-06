@@ -15,10 +15,13 @@ namespace nsfw {
 
         virtual ~Transform() {}
 
-        glm::mat4 GetWorldTransform() const {
-            return glm::inverse( glm::lookAt( m_position, glm::vec3( 0, 0, 1 ), glm::vec3( 0, 1, 0 ) ) );
+        virtual glm::mat4 GetWorldTransform() const {
+            return glm::translate( m_position ) *
+                    glm::rotate( m_rotation.z, glm::vec3( 0, 0, 1 ) ) *
+                    glm::rotate( m_rotation.y, glm::vec3( 0, 1, 0 ) ) *
+                    glm::rotate( m_rotation.x, glm::vec3( 1, 0, 0 ) ) *
+                    glm::scale( m_scale );
         }
-
     };
 
 }

@@ -52,8 +52,12 @@ namespace nsfw {
         }
 
         void DeferredApplication::onPlay() {
-            m_camera = new Camera( glm::vec3( 0, 0, 5 ) );
+            m_camera = new Camera( glm::vec3( 0, 0, 10 ) );
+            // m_camera->m_rotation = glm::vec3(0,90,0);
 
+            auto d = m_camera->GetWorldTransform();
+            /*m_camera->m_lookAt = true;
+            m_camera->m_scale = glm::vec3( 1, 6, 1 );*/
             m_soulspear = new Geometry[3];
 
             m_light = new LightD;
@@ -75,7 +79,7 @@ namespace nsfw {
             m_soulspear[1].normal = "soulspear_normal.tga";
             m_soulspear[1].specular = "soulspear_specular.tga";
             m_soulspear[1].specPower = 128.0f;
-            m_soulspear[1].transform = translate( 5.f, 0.f, 0.f );
+            m_soulspear[1].transform = translate( 5.f, 5.f, 0.f );
 
             m_soulspear[2].mesh = "Soulspear";
             m_soulspear[2].tris = "Soulspear";
@@ -90,7 +94,7 @@ namespace nsfw {
             m_compositePass = new rendering::RenderPass_Composite( "CompPass", "Screen" ); // Screen is defined in nsfw::Assets::init()
         }
 
-        void DeferredApplication::onStep() { /*{ // Camera Movement
+        void DeferredApplication::onStep() { { // Camera Movement
                 bool w = Window::instance().getKey( 87 ),
                         s = Window::instance().getKey( 83 ),
                         a = Window::instance().getKey( 65 ),
@@ -102,25 +106,25 @@ namespace nsfw {
                 float speed = 0.25f;
 
                 if ( w ) {
-                    movement.z = speed;
-                }
-                else if ( s ) {
                     movement.z = -speed;
                 }
-                if ( a ) {
-                    movement.x = speed;
+                else if ( s ) {
+                    movement.z = speed;
                 }
-                else if ( d ) {
+                if ( a ) {
                     movement.x = -speed;
                 }
-                if ( q ) {
-                    movement.y = speed;
+                else if ( d ) {
+                    movement.x = speed;
                 }
-                else if ( e ) {
+                if ( q ) {
                     movement.y = -speed;
                 }
+                else if ( e ) {
+                    movement.y = speed;
+                }
 
-                m_camera->Set_PositionOffsetOrigin( m_camera->Get_PositionOffsetOrigin() + movement );
+                m_camera->m_position = m_camera->m_position + movement;
 
                 bool up = Window::instance().getKey( 265 ),
                         down = Window::instance().getKey( 264 ),
@@ -142,9 +146,9 @@ namespace nsfw {
                     rotation.y = -speed;
                 }
 
-                m_camera->Set_ModelRotation( m_camera->Get_ModelRotation() + rotation );
+                m_camera->m_rotation = m_camera->m_rotation + rotation;
 
-            }*/
+            }
 
             m_light->update();
             //m_light->direction = normalize( vec3( sin( Window::instance().getTime() ), m_light->direction.y, m_light->direction.z ) );
@@ -157,13 +161,13 @@ namespace nsfw {
             m_geometryPass->draw( *m_camera, m_soulspear[2] );
             m_geometryPass->post();
 
-            m_pass_GlobalDirectionalLight->prep();
+            /*m_pass_GlobalDirectionalLight->prep();
             m_pass_GlobalDirectionalLight->draw( *m_camera, *m_light );
             m_pass_GlobalDirectionalLight->post();
 
             m_compositePass->prep();
             m_compositePass->draw();
-            m_compositePass->post();
+            m_compositePass->post();*/
         }
 
         void DeferredApplication::onTerm() {

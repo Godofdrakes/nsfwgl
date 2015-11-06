@@ -26,9 +26,6 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="CPass.h">
-      <Filter>Header Files\Passes</Filter>
-    </ClInclude>
     <ClInclude Include="Camera.h">
       <Filter>Header Files\Objects</Filter>
     </ClInclude>
@@ -41,11 +38,23 @@
     <ClInclude Include="DefApp.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="GPass.h">
-      <Filter>Header Files\Passes</Filter>
-    </ClInclude>
     <ClInclude Include="RenderPass_GlobalDirectionalLight.h">
       <Filter>Header Files\Passes</Filter>
+    </ClInclude>
+    <ClInclude Include="RenderPass_Geometry.h">
+      <Filter>Header Files\Passes</Filter>
+    </ClInclude>
+    <ClInclude Include="RenderPass_Composite.h">
+      <Filter>Header Files\Passes</Filter>
+    </ClInclude>
+    <ClInclude Include="RenderPass_ShadowMap.h">
+      <Filter>Header Files\Passes</Filter>
+    </ClInclude>
+    <ClInclude Include="RenderPass_PointLight.h">
+      <Filter>Header Files\Passes</Filter>
+    </ClInclude>
+    <ClInclude Include="Transform.h">
+      <Filter>Header Files\Objects</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

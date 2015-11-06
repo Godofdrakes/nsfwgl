@@ -4,119 +4,176 @@
 #include "Light.h"
 #include "Camera.h"
 
-#include "GPass.h"
-#include "CPass.h"
+#include "RenderPass_Geometry.h"
 #include "RenderPass_GlobalDirectionalLight.h"
+#include "RenderPass_PointLight.h"
+#include "RenderPass_Composite.h"
+#include "RenderPass_ShadowMap.h"
 
-using namespace nsfw;
 
 int main() {
+    using namespace nsfw::application;
     DeferredApplication d;
-
     d.init();
     d.play();
     d.term();
-
-    system( "pause" );
 }
 
+namespace nsfw {
+    namespace application {
 
-void DeferredApplication::onInit() {
-    using namespace gl;
-    auto& w = Window::instance();
-    auto& a = Assets::instance();
+        void DeferredApplication::onInit() {
+            using namespace gl;
+            auto& w = Window::instance();
+            auto& a = Assets::instance();
 
-    // Setup FBOs
-    const char* gpassTextureNames[] = { "GPassAlbedo","GPassPosition","GPassNormal","GPassDepth" };
-    const GLenum gpassDepths[] = { GL_RGB8, GL_RGBA32F, GL_RGB32F, GL_DEPTH_COMPONENT };
-    a.makeFBO( "GeometryPass", w.getWidth(), w.getHeight(), 4, gpassTextureNames, gpassDepths );
+            // Setup FBOs
+            const char* gpassTextureNames[] = { "GPassAlbedo","GPassPosition","GPassNormal","GPassDepth" };
+            const GLenum gpassDepths[] = { GL_RGB8, GL_RGBA32F, GL_RGB32F, GL_DEPTH_COMPONENT };
+            a.makeFBO( "GeometryPass", w.getWidth(), w.getHeight(), 4, gpassTextureNames, gpassDepths );
 
-    const char* lpassTextureNames[] = { "LPassColor" };
-    const GLenum lpassDepths[] = { GL_RGB8 };
-    a.makeFBO( "LightPass", w.getWidth(), w.getHeight(), 1, lpassTextureNames, lpassDepths );
+            const char* lpassTextureNames[] = { "LPassColor" };
+            const GLenum lpassDepths[] = { GL_RGB8 };
+            a.makeFBO( "LightPass", w.getWidth(), w.getHeight(), 1, lpassTextureNames, lpassDepths );
 
-    // Load Shaders
-    a.loadShader( "GeometryPassPhong",
-                  "./Assets/Shaders/Geometry/Vertex.glsl",
-                  "./Assets/Shaders/Geometry/Fragment.glsl" );
-    a.loadShader( "LightPassDirectional",
-                  "./Assets/Shaders/Lighting/Global_Directional/Vertex.glsl",
-                  "./Assets/Shaders/Lighting/Global_Directional/Fragment.glsl" );
-    a.loadShader( "CompPass",
-                  "./Assets/Shaders/Composite/Vertex.glsl",
-                  "./Assets/Shaders/Composite/Fragment.glsl" );
+            // Load Shaders
+            a.loadShader( "GeometryPassPhong",
+                          "./Assets/Shaders/Geometry/Vertex.glsl",
+                          "./Assets/Shaders/Geometry/Fragment.glsl" );
+            a.loadShader( "LightPassDirectional",
+                          "./Assets/Shaders/Lighting/Global_Directional/Vertex.glsl",
+                          "./Assets/Shaders/Lighting/Global_Directional/Fragment.glsl" );
+            a.loadShader( "CompPass",
+                          "./Assets/Shaders/Composite/Vertex.glsl",
+                          "./Assets/Shaders/Composite/Fragment.glsl" );
 
-    // Load any other textures and geometry we want to use
-    a.loadFBX( "Soulspear", "./Assets/FBX/SoulSpear/soulspear.fbx" );
-}
+            // Load any other textures and geometry we want to use
+            a.loadFBX( "Soulspear", "./Assets/FBX/SoulSpear/soulspear.fbx" );
+        }
 
-void DeferredApplication::onPlay() {
-    m_camera = new Camera;
-    m_light = new LightD;
-    m_soulspear = new Geometry[3];
+        void DeferredApplication::onPlay() {
+            m_camera = new Camera( glm::vec3( 0, 0, 5 ) );
 
-    m_camera->lookAt( vec3( 0.f, 2.5f, -5.f ), vec3( 0.f, 2.5f, 0.f ), vec3( 0.f, 1.f, 0.f ) );
+            m_soulspear = new Geometry[3];
 
-    m_light->color = vec3( 1.0f, 1.0f, 1.0f ); // Make sure the light is coming from a direction that makes the world visible to the user
-    m_light->direction = normalize( vec3( 0.f, 0.f, -1.f ) );
+            m_light = new LightD;
+            m_light->color = vec3( 1.0f, 1.0f, 1.0f ); // Make sure the light is coming from a direction that makes the world visible to the user
+            m_light->direction = normalize( vec3( 0.f, 0.f, -1.f ) );
 
 #pragma message ( "Make sure the following names match the FBX file's output!" )
-    m_soulspear[0].mesh = "Soulspear";
-    m_soulspear[0].tris = "Soulspear";
-    m_soulspear[0].diffuse = "soulspear_diffuse.tga"; // loadFBX will need to name every handle it creates,
-    m_soulspear[0].normal = "soulspear_normal.tga"; // These handle names may not be what your loadFBX sets them as!
-    m_soulspear[0].specular = "soulspear_specular.tga"; // (Assets will report what the key names are though)
-    m_soulspear[0].specPower = 64.0f;
-    m_soulspear[0].transform = mat4( 1 );
+            m_soulspear[0].mesh = "Soulspear";
+            m_soulspear[0].tris = "Soulspear";
+            m_soulspear[0].diffuse = "soulspear_diffuse.tga"; // loadFBX will need to name every handle it creates,
+            m_soulspear[0].normal = "soulspear_normal.tga"; // These handle names may not be what your loadFBX sets them as!
+            m_soulspear[0].specular = "soulspear_specular.tga"; // (Assets will report what the key names are though)
+            m_soulspear[0].specPower = 64.0f;
+            m_soulspear[0].transform = mat4( 1 );
 
-    m_soulspear[1].mesh = "Soulspear";
-    m_soulspear[1].tris = "Soulspear";
-    m_soulspear[1].diffuse = "soulspear_diffuse.tga";
-    m_soulspear[1].normal = "soulspear_normal.tga";
-    m_soulspear[1].specular = "soulspear_specular.tga";
-    m_soulspear[1].specPower = 128.0f;
-    m_soulspear[1].transform = translate( 5.f, 0.f, 0.f );
+            m_soulspear[1].mesh = "Soulspear";
+            m_soulspear[1].tris = "Soulspear";
+            m_soulspear[1].diffuse = "soulspear_diffuse.tga";
+            m_soulspear[1].normal = "soulspear_normal.tga";
+            m_soulspear[1].specular = "soulspear_specular.tga";
+            m_soulspear[1].specPower = 128.0f;
+            m_soulspear[1].transform = translate( 5.f, 0.f, 0.f );
 
-    m_soulspear[2].mesh = "Soulspear";
-    m_soulspear[2].tris = "Soulspear";
-    m_soulspear[2].diffuse = "soulspear_diffuse.tga";
-    m_soulspear[2].normal = "soulspear_normal.tga";
-    m_soulspear[2].specular = "soulspear_specular.tga";
-    m_soulspear[2].specPower = 0.0f;
-    m_soulspear[2].transform = translate( -5.f, 0.f, 0.f );
+            m_soulspear[2].mesh = "Soulspear";
+            m_soulspear[2].tris = "Soulspear";
+            m_soulspear[2].diffuse = "soulspear_diffuse.tga";
+            m_soulspear[2].normal = "soulspear_normal.tga";
+            m_soulspear[2].specular = "soulspear_specular.tga";
+            m_soulspear[2].specPower = 0.0f;
+            m_soulspear[2].transform = translate( -5.f, 0.f, 0.f );
 
-    m_geometryPass = new GPass( "GeometryPassPhong", "GeometryPass" );
-    m_pass_GlobalDirectionalLight = new RenderPass_GlobalDirectionalLight( "LightPassDirectional", "LightPass" );
-    m_compositePass = new CPass( "CompPass", "Screen" ); // Screen is defined in nsfw::Assets::init()
-}
+            m_geometryPass = new rendering::RenderPass_Geometry( "GeometryPassPhong", "GeometryPass" );
+            m_pass_GlobalDirectionalLight = new rendering::RenderPass_GlobalDirectionalLight( "LightPassDirectional", "LightPass" );
+            m_compositePass = new rendering::RenderPass_Composite( "CompPass", "Screen" ); // Screen is defined in nsfw::Assets::init()
+        }
 
-void DeferredApplication::onStep() {
-    m_light->update();
-    m_light->direction = normalize( vec3( sin( Window::instance().getTime() ), m_light->direction.y, m_light->direction.z ) );
-    m_camera->update();
-    m_soulspear->update();
+        void DeferredApplication::onStep() { /*{ // Camera Movement
+                bool w = Window::instance().getKey( 87 ),
+                        s = Window::instance().getKey( 83 ),
+                        a = Window::instance().getKey( 65 ),
+                        d = Window::instance().getKey( 68 ),
+                        q = Window::instance().getKey( 81 ),
+                        e = Window::instance().getKey( 69 );
 
-    m_geometryPass->prep();
-    m_geometryPass->draw( *m_camera, m_soulspear[0] );
-    m_geometryPass->draw( *m_camera, m_soulspear[1] );
-    m_geometryPass->draw( *m_camera, m_soulspear[2] );
-    m_geometryPass->post();
+                vec3 movement( 0.0f, 0.0f, 0.0f );
+                float speed = 0.25f;
 
-    m_pass_GlobalDirectionalLight->prep();
-    m_pass_GlobalDirectionalLight->draw( *m_camera, *m_light );
-    m_pass_GlobalDirectionalLight->post();
+                if ( w ) {
+                    movement.z = speed;
+                }
+                else if ( s ) {
+                    movement.z = -speed;
+                }
+                if ( a ) {
+                    movement.x = speed;
+                }
+                else if ( d ) {
+                    movement.x = -speed;
+                }
+                if ( q ) {
+                    movement.y = speed;
+                }
+                else if ( e ) {
+                    movement.y = -speed;
+                }
 
-    m_compositePass->prep();
-    m_compositePass->draw();
-    m_compositePass->post();
-}
+                m_camera->Set_PositionOffsetOrigin( m_camera->Get_PositionOffsetOrigin() + movement );
 
-void DeferredApplication::onTerm() {
-    delete m_camera;
-    delete m_light;
-    delete[] m_soulspear;
+                bool up = Window::instance().getKey( 265 ),
+                        down = Window::instance().getKey( 264 ),
+                        left = Window::instance().getKey( 263 ),
+                        right = Window::instance().getKey( 262 );
 
-    delete m_compositePass;
-    delete m_geometryPass;
-    delete m_pass_GlobalDirectionalLight;
+                vec3 rotation( 0.0f, 0.0f, 0.0f );
+
+                if ( up ) {
+                    rotation.x = speed;
+                }
+                else if ( down ) {
+                    rotation.x = -speed;
+                }
+                if ( left ) {
+                    rotation.y = speed;
+                }
+                else if ( right ) {
+                    rotation.y = -speed;
+                }
+
+                m_camera->Set_ModelRotation( m_camera->Get_ModelRotation() + rotation );
+
+            }*/
+
+            m_light->update();
+            //m_light->direction = normalize( vec3( sin( Window::instance().getTime() ), m_light->direction.y, m_light->direction.z ) );
+            m_camera->Update();
+            m_soulspear->update();
+
+            m_geometryPass->prep();
+            m_geometryPass->draw( *m_camera, m_soulspear[0] );
+            m_geometryPass->draw( *m_camera, m_soulspear[1] );
+            m_geometryPass->draw( *m_camera, m_soulspear[2] );
+            m_geometryPass->post();
+
+            m_pass_GlobalDirectionalLight->prep();
+            m_pass_GlobalDirectionalLight->draw( *m_camera, *m_light );
+            m_pass_GlobalDirectionalLight->post();
+
+            m_compositePass->prep();
+            m_compositePass->draw();
+            m_compositePass->post();
+        }
+
+        void DeferredApplication::onTerm() {
+            delete m_camera;
+            delete m_light;
+            delete[] m_soulspear;
+
+            delete m_compositePass;
+            delete m_geometryPass;
+            delete m_pass_GlobalDirectionalLight;
+        }
+    }
 }

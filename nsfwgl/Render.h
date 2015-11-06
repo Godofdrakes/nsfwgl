@@ -16,37 +16,39 @@
 */
 
 namespace nsfw {
-    // Add whatever types you want!
-    namespace UNIFORM {
-        enum TYPE { eNONE, FLO1, FLO3, FLO4, MAT4, INT1, TEX2, eSIZE };
+    namespace rendering {
+        // Add whatever types you want!
+        namespace UNIFORM {
+            enum TYPE { eNONE, FLO1, FLO3, FLO4, MAT4, INT1, TEX2, eSIZE };
+        }
+
+        class RenderPass {
+        protected:
+            Asset<ASSET::FBO> fbo; // All renderpasses should use an FBO. 0 is the screen!
+            Asset<ASSET::SHADER> shader; // All RPs also use a shader!
+
+        public:
+            virtual ~RenderPass() {}
+
+            RenderPass(Asset<ASSET::SHADER> a_shader, Asset<ASSET::FBO> a_fbo) : shader(a_shader), fbo(a_fbo) {}
+
+            // uniforms could be set in prep, elsewhere in the application, or in the draw
+            // This function should allow you to hide the glUniform* functions into a SWITCH statement.
+            // The logic for each uniform is slightly different- not all parameters are necessary.
+            // value should be the address of whatever data you want to use- it should match with
+            // the uniform we're using. count is for arrays (or texture slot). Normalize is whether or not
+            // we want GL to normalize the data coming in or not.
+
+            // We can return whether or not the we were successful (location == -1)
+            bool setUniform(const char* name, UNIFORM::TYPE type, const void* value, unsigned count = 1, bool normalize = false);
+
+            // set GL state settings and globally accessible uniforms! Should be called before rendering occurs!
+            virtual void prep();
+
+            // reset the GL state- undo what we did just in case.
+            virtual void post();
+        };
     }
-
-    class RenderPass {
-    protected:
-        Asset<ASSET::FBO> fbo; // All renderpasses should use an FBO. 0 is the screen!
-        Asset<ASSET::SHADER> shader; // All RPs also use a shader!
-
-    public:
-        virtual ~RenderPass() {}
-
-        RenderPass( Asset<ASSET::SHADER> a_shader, Asset<ASSET::FBO> a_fbo ) : shader( a_shader ), fbo( a_fbo ) {}
-
-        // uniforms could be set in prep, elsewhere in the application, or in the draw
-        // This function should allow you to hide the glUniform* functions into a SWITCH statement.
-        // The logic for each uniform is slightly different- not all parameters are necessary.
-        // value should be the address of whatever data you want to use- it should match with
-        // the uniform we're using. count is for arrays (or texture slot). Normalize is whether or not
-        // we want GL to normalize the data coming in or not.
-
-        // We can return whether or not the we were successful (location == -1)
-        bool setUniform( const char* name, UNIFORM::TYPE type, const void* value, unsigned count = 1, bool normalize = false );
-
-        // set GL state settings and globally accessible uniforms! Should be called before rendering occurs!
-        virtual void prep();
-
-        // reset the GL state- undo what we did just in case.
-        virtual void post();
-    };
 }
 
 

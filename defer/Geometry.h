@@ -5,18 +5,17 @@
 
 using namespace nsfw::ASSET;
 
-struct Geometry
-{
-	glm::mat4 transform;
+struct Geometry {
+    glm::mat4 transform;
 
-	nsfw::Asset<VAO> mesh;
-	nsfw::Asset<SIZE> tris;
+    nsfw::Asset<VAO> mesh;
+    nsfw::Asset<SIZE> tris;
 
-	nsfw::Asset<TEXTURE> diffuse;
-	nsfw::Asset<TEXTURE> normal;
-	nsfw::Asset<TEXTURE> specular;
+    nsfw::Asset<TEXTURE> diffuse;
+    nsfw::Asset<TEXTURE> normal;
+    nsfw::Asset<TEXTURE> specular;
 
-	float specPower;
+    float specPower;
 
-	void update() {}
+    void update() {}
 };

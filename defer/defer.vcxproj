@@ -138,10 +138,13 @@
     <ClInclude Include="Camera.h" />
     <ClInclude Include="DefApp.h" />
     <ClInclude Include="Geometry.h" />
-    <ClInclude Include="GPass.h" />
-    <ClInclude Include="CPass.h" />
     <ClInclude Include="Light.h" />
+    <ClInclude Include="RenderPass_Geometry.h" />
+    <ClInclude Include="RenderPass_Composite.h" />
     <ClInclude Include="RenderPass_GlobalDirectionalLight.h" />
+    <ClInclude Include="RenderPass_PointLight.h" />
+    <ClInclude Include="RenderPass_ShadowMap.h" />
+    <ClInclude Include="Transform.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -1,15 +1,14 @@
 #pragma once
+
 #include "../nsfwgl/nsfw.h"
-#include "Light.h"
-#include "Camera.h"
 
 namespace nsfw {
     namespace rendering {
-        class RenderPass_GlobalDirectionalLight : public RenderPass {
+        class RenderPass_PointLight : public RenderPass {
             Asset<TEXTURE> position, normal;
 
         public:
-            RenderPass_GlobalDirectionalLight( const char* shaderName, const char* fboName ) :
+            RenderPass_PointLight( const char* shaderName, const char* fboName ) :
                 RenderPass( shaderName, fboName ),
                 position( "GPassPosition" ),
                 normal( "GPassNormal" ) {}
@@ -33,19 +32,15 @@ namespace nsfw {
                 glBindFramebuffer( GLenum::GL_FRAMEBUFFER, 0 );
             }
 
-            void draw( const Camera& c, const LightD& l ) {
+            void draw( const Camera& c, const LightP& l ) {
                 using namespace gl;
 
-                setUniform( "uDirectionalLight.direction",
+                setUniform( "uPointLight.position",
                             UNIFORM::TYPE::FLO3,
-                            value_ptr( l.direction ) );
-                setUniform( "uDirectionalLight.color",
+                            value_ptr( l.position ) );
+                setUniform( "uPointLight.color",
                             UNIFORM::TYPE::FLO3,
                             value_ptr( l.color ) );
-
-                setUniform( "uAmbientLightColor",
-                            UNIFORM::TYPE::FLO3,
-                            value_ptr( vec3( 0.0f, 0.0f, 0.0f ) ) );
 
                 setUniform( "uCameraView",
                             UNIFORM::TYPE::MAT4,

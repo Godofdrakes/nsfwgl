@@ -4,14 +4,12 @@ in vec2 vTexCoord;
 
 out vec3 LightOutput;
 
-struct DirectionalLight {
-    vec3 direction;
+struct PointLight {
+    vec3 position;
     vec3 color;
 };
 
-uniform DirectionalLight uDirectionalLight;
-uniform vec3 uAmbientLightColor = vec3( 0.25, 0.25, 0.25 );
-//uniform float uSpecularLightPower = 0;
+uniform PointLight uPointLight;
 uniform mat4 uCameraView = mat4( 1 );
 uniform vec3 uCameraPosition = vec3( 0, 0, -5 );
 uniform sampler2D uNormalTexture;
@@ -23,8 +21,9 @@ void main() {
     float specularLightPower = texture( uPositionTexture, vTexCoord ).w;
 
     // Diffuse Lighting
-    vec3 lightDirection = ( uCameraView * vec4( uDirectionalLight.direction, 0 ) ).xyz;
-    float diffuseLight = max( dot( normal, lightDirection ), 0 );
+    vec3 lightDirection = ( uCameraView * vec4( uPointLight.position - position, 0 ) ).xyz;
+    float diffuseLight = dot( normal, lightDirection ) / ( length(lightDirection) * length( normal ) );
+    diffuseLight = clamp( diffuseLight, 0, 1 );
     vec3 diffuseColor = uDirectionalLight.color * diffuseLight;
 
     // Specular lighting

@@ -36,6 +36,10 @@ namespace nsfw {
             const GLenum lpassDepths[] = { GL_RGB8 };
             a.makeFBO( "LightPass", w.getWidth(), w.getHeight(), 1, lpassTextureNames, lpassDepths );
 
+            const char* shadowTextureNames[] = { "ShadowDepth" };
+            const GLenum shadowDepths[] = { GL_DEPTH_COMPONENT };
+            a.makeFBO( "ShadowPass", w.getWidth() * 2, w.getWidth() * 2, 1, shadowTextureNames, shadowDepths );
+
             // Load Shaders
             a.loadShader( "GeometryPassPhong",
                           "./Assets/Shaders/Geometry/Vertex.glsl",

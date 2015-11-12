@@ -10,8 +10,8 @@
 #include "RenderPass_ShadowMap.h"
 
 namespace nsfw {
-
     namespace application {
+
         class DeferredApplication : public Application {
             camera::Camera* m_camera;
             Geometry* m_soulspear;
@@ -28,5 +28,6 @@ namespace nsfw {
             virtual void onTerm() override;
             virtual void onPlay() override;
         };
+
     }
 }

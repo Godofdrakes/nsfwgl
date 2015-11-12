@@ -50,6 +50,9 @@ namespace nsfw {
             a.loadShader( "CompPass",
                           "./Assets/Shaders/Composite/Vertex.glsl",
                           "./Assets/Shaders/Composite/Fragment.glsl" );
+            a.loadShader( "ShadowPass",
+                          "./Assets/Shaders/Shadows/Vertex.glsl",
+                          "./Assets/Shaders/Shadows/Fragment.glsl" );
 
             // Load any other textures and geometry we want to use
             a.loadFBX( "Soulspear", "./Assets/FBX/SoulSpear/soulspear.fbx" );
@@ -99,6 +102,7 @@ namespace nsfw {
             m_geometryPass = new rendering::RenderPass_Geometry( "GeometryPassPhong", "GeometryPass" );
             m_directionalLightPass = new rendering::RenderPass_GlobalDirectionalLight( "LightPassDirectional", "LightPass" );
             m_compositePass = new rendering::RenderPass_Composite( "CompPass", "Screen" ); // Screen is defined in nsfw::Assets::init()
+            m_shadowPass = new rendering::RenderPass_ShadowMap( "ShadowPass", "ShadowPass" );
         }
 
         void DeferredApplication::onStep() {
@@ -115,6 +119,15 @@ namespace nsfw {
             m_geometryPass->draw( *m_camera, m_soulspear[2] );
             m_geometryPass->draw( *m_camera, m_soulspear[3] );
             m_geometryPass->post();
+
+            m_shadowPass->prep();
+            m_shadowPass->draw( *m_directional, m_soulspear[0] );
+            m_shadowPass->draw( *m_directional, m_soulspear[1] );
+            m_shadowPass->draw( *m_directional, m_soulspear[2] );
+            m_shadowPass->draw( *m_directional, m_soulspear[3] );
+            m_shadowPass->post();
+
+            // TODO: Apply shadows to lighting
 
             m_directionalLightPass->prep();
             m_directionalLightPass->draw( *m_camera, *m_directional );

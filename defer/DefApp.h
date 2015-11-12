@@ -1,6 +1,8 @@
 #pragma once
 
 #include "../nsfwgl/nsfw.h"
+#include "Camera.h"
+#include "Geometry.h"
 #include "RenderPass_Geometry.h"
 #include "RenderPass_Composite.h"
 #include "RenderPass_GlobalDirectionalLight.h"
@@ -8,11 +10,6 @@
 #include "RenderPass_ShadowMap.h"
 
 namespace nsfw {
-    namespace camera {
-        class Camera;
-    }
-
-    class Geometry;
 
     namespace application {
         class DeferredApplication : public Application {
@@ -21,8 +18,9 @@ namespace nsfw {
             lights::Light_Directional* m_directional;
 
             rendering::RenderPass_Geometry* m_geometryPass;
-            rendering::RenderPass_GlobalDirectionalLight* m_pass_GlobalDirectionalLight;
+            rendering::RenderPass_GlobalDirectionalLight* m_directionalLightPass;
             rendering::RenderPass_Composite* m_compositePass;
+            rendering::RenderPass_ShadowMap* m_shadowPass;
 
         public:
             virtual void onInit() override;

@@ -59,10 +59,6 @@ namespace nsfw {
             m_camera = new camera::FlyCamera( glm::vec3( 0, 0, 10 ), 80.f, Window::instance().getWidth(), Window::instance().getHeight() );
             m_soulspear = new Geometry[4];
 
-            m_light = new LightD;
-            m_light->color = glm::vec3( 1.0f, 1.0f, 1.0f ); // Make sure the light is coming from a direction that makes the world visible to the user
-            m_light->direction = glm::normalize( glm::vec3( 0.f, 1.f, 1.f ) );
-
             m_directional = new lights::Light_Directional( glm::vec3( 0.0f, 1.0f, 1.0f ) );
 
 #pragma message ( "Make sure the following names match the FBX file's output!" )
@@ -101,7 +97,7 @@ namespace nsfw {
             m_soulspear[3].Scale = glm::vec3( 20, 20, 1 );
 
             m_geometryPass = new rendering::RenderPass_Geometry( "GeometryPassPhong", "GeometryPass" );
-            m_pass_GlobalDirectionalLight = new rendering::RenderPass_GlobalDirectionalLight( "LightPassDirectional", "LightPass" );
+            m_directionalLightPass = new rendering::RenderPass_GlobalDirectionalLight( "LightPassDirectional", "LightPass" );
             m_compositePass = new rendering::RenderPass_Composite( "CompPass", "Screen" ); // Screen is defined in nsfw::Assets::init()
         }
 
@@ -120,9 +116,9 @@ namespace nsfw {
             m_geometryPass->draw( *m_camera, m_soulspear[3] );
             m_geometryPass->post();
 
-            m_pass_GlobalDirectionalLight->prep();
-            m_pass_GlobalDirectionalLight->draw( *m_camera, *m_directional );
-            m_pass_GlobalDirectionalLight->post();
+            m_directionalLightPass->prep();
+            m_directionalLightPass->draw( *m_camera, *m_directional );
+            m_directionalLightPass->post();
 
             m_compositePass->prep();
             m_compositePass->draw();
@@ -136,7 +132,7 @@ namespace nsfw {
 
             delete m_compositePass;
             delete m_geometryPass;
-            delete m_pass_GlobalDirectionalLight;
+            delete m_directionalLightPass;
         }
     }
 }

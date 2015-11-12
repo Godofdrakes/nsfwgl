@@ -52,12 +52,14 @@ namespace nsfw {
         }
 
         void DeferredApplication::onPlay() {
-            m_camera = new camera::FlyCamera( glm::vec3( 0, 0, 10 ) );
+            m_camera = new camera::FlyCamera( glm::vec3( 0, 0, 10 ), 80.f, Window::instance().getWidth(), Window::instance().getHeight() );
             m_soulspear = new Geometry[4];
 
             m_light = new LightD;
-            m_light->color = vec3( 1.0f, 1.0f, 1.0f ); // Make sure the light is coming from a direction that makes the world visible to the user
-            m_light->direction = normalize( vec3( 0.f, 0.f, 1.f ) );
+            m_light->color = glm::vec3( 1.0f, 1.0f, 1.0f ); // Make sure the light is coming from a direction that makes the world visible to the user
+            m_light->direction = glm::normalize( glm::vec3( 0.f, 1.f, 1.f ) );
+
+            m_directional = new lights::Light_Directional( glm::vec3( 0.0f, 1.0f, 1.0f ) );
 
 #pragma message ( "Make sure the following names match the FBX file's output!" )
             m_soulspear[0].mesh = "Soulspear";
@@ -66,15 +68,15 @@ namespace nsfw {
             m_soulspear[0].normal = "soulspear_normal.tga"; // These handle names may not be what your loadFBX sets them as!
             m_soulspear[0].specular = "soulspear_specular.tga"; // (Assets will report what the key names are though)
             m_soulspear[0].specPower = 64.0f;
-            m_soulspear[0].m_position = glm::vec3( 0, 0, 0 );
+            m_soulspear[0].Position = glm::vec3( 0, 0, 0 );
 
             m_soulspear[1].mesh = "Soulspear";
             m_soulspear[1].tris = "Soulspear";
             m_soulspear[1].diffuse = "soulspear_diffuse.tga";
             m_soulspear[1].normal = "soulspear_normal.tga";
             m_soulspear[1].specular = "soulspear_specular.tga";
-            m_soulspear[1].specPower = 128.0f;
-            m_soulspear[1].m_position = glm::vec3( 5, 1, 0 );
+            m_soulspear[1].specPower = 256.0f;
+            m_soulspear[1].Position = glm::vec3( 5, 1, 0 );
 
             m_soulspear[2].mesh = "Soulspear";
             m_soulspear[2].tris = "Soulspear";
@@ -82,7 +84,7 @@ namespace nsfw {
             m_soulspear[2].normal = "soulspear_normal.tga";
             m_soulspear[2].specular = "soulspear_specular.tga";
             m_soulspear[2].specPower = 0.0f;
-            m_soulspear[2].m_position = glm::vec3( -5, -1, 0 );
+            m_soulspear[2].Position = glm::vec3( -5, -1, 0 );
 
             m_soulspear[3].mesh = "Quad";
             m_soulspear[3].tris = "Quad";
@@ -90,9 +92,9 @@ namespace nsfw {
             m_soulspear[3].normal = "Fallback_Black";
             m_soulspear[3].specular = "Fallback_Black";
             m_soulspear[3].specPower = 0.0f;
-            m_soulspear[3].m_position = glm::vec3( 0, -3, 0 );
-            m_soulspear[3].m_rotation = glm::vec3( 90.0f, 0.0f, 0.0f );
-            m_soulspear[3].m_scale = glm::vec3( 10, 10, 1 );
+            m_soulspear[3].Position = glm::vec3( 0, -3, 0 );
+            m_soulspear[3].Rotation = glm::vec3( 90.0f, 0.0f, 0.0f );
+            m_soulspear[3].Scale = glm::vec3( 20, 20, 1 );
 
             m_geometryPass = new rendering::RenderPass_Geometry( "GeometryPassPhong", "GeometryPass" );
             m_pass_GlobalDirectionalLight = new rendering::RenderPass_GlobalDirectionalLight( "LightPassDirectional", "LightPass" );
@@ -101,8 +103,9 @@ namespace nsfw {
 
         void DeferredApplication::onStep() {
 
-            m_light->update();
-            //m_light->direction = normalize( vec3( sin( Window::instance().getTime() ), m_light->direction.y, m_light->direction.z ) );
+            m_directional->Update();
+            m_directional->Position = glm::normalize( glm::vec3( sin( Window::instance().getTime() ), m_directional->Position.y, m_directional->Position.z ) );
+
             m_camera->Update();
             m_soulspear->Update();
 
@@ -114,7 +117,7 @@ namespace nsfw {
             m_geometryPass->post();
 
             m_pass_GlobalDirectionalLight->prep();
-            m_pass_GlobalDirectionalLight->draw( *m_camera, *m_light );
+            m_pass_GlobalDirectionalLight->draw( *m_camera, *m_directional );
             m_pass_GlobalDirectionalLight->post();
 
             m_compositePass->prep();
@@ -124,7 +127,7 @@ namespace nsfw {
 
         void DeferredApplication::onTerm() {
             delete m_camera;
-            delete m_light;
+            delete m_directional;
             delete[] m_soulspear;
 
             delete m_compositePass;

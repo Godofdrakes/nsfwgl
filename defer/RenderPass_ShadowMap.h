@@ -14,8 +14,7 @@ namespace nsfw {
             virtual void prep() override {
                 using namespace gl;
                 glBindFramebuffer( GLenum::GL_FRAMEBUFFER, Assets::instance().get( fbo ) );
-                glClear( ClearBufferMask::GL_COLOR_BUFFER_BIT | ClearBufferMask::GL_DEPTH_BUFFER_BIT );
-                glClearColor( 0.0f, 0.0f, 0.0f, 0.0f );
+                glClear( ClearBufferMask::GL_DEPTH_BUFFER_BIT );
                 glUseProgram( Assets::instance().get( shader ) );
             }
 
@@ -26,11 +25,16 @@ namespace nsfw {
                 glBindFramebuffer( GLenum::GL_FRAMEBUFFER, 0 );
             }
 
-            void draw() {
+            void draw( const lights::Light_Directional& l, const Geometry& g ) {
                 using namespace gl;
-                glBindVertexArray( Assets::instance().get<ASSET::VAO>( "Quad" ) );
+
+                setUniform( "uLightMatrix",
+                            UNIFORM::MAT4,
+                            glm::value_ptr( l.GetProjection() * l.GetViewTransform() ) );
+
+                glBindVertexArray( Assets::instance().get( g.mesh ) );
                 glDrawElements( GLenum::GL_TRIANGLES,
-                                Assets::instance().get<ASSET::SIZE>( "Quad" ),
+                                Assets::instance().get( g.mesh ),
                                 GL_UNSIGNED_INT,
                                 0 );
             }

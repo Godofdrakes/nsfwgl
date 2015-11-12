@@ -7,8 +7,6 @@
 #include "RenderPass_PointLight.h"
 #include "RenderPass_ShadowMap.h"
 
-struct LightD;
-
 namespace nsfw {
     namespace camera {
         class Camera;
@@ -20,7 +18,7 @@ namespace nsfw {
         class DeferredApplication : public Application {
             camera::Camera* m_camera;
             Geometry* m_soulspear;
-            LightD* m_light;
+            lights::Light_Directional* m_directional;
 
             rendering::RenderPass_Geometry* m_geometryPass;
             rendering::RenderPass_GlobalDirectionalLight* m_pass_GlobalDirectionalLight;

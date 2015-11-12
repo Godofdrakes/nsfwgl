@@ -33,26 +33,26 @@ namespace nsfw {
                 glBindFramebuffer( GLenum::GL_FRAMEBUFFER, 0 );
             }
 
-            void draw( const camera::Camera& c, const LightD& l ) {
+            void draw( const camera::Camera& c, const lights::Light_Directional& l ) {
                 using namespace gl;
 
                 setUniform( "uDirectionalLight.direction",
                             UNIFORM::TYPE::FLO3,
-                            value_ptr( l.direction ) );
+                            glm::value_ptr( l.Position ) );
                 setUniform( "uDirectionalLight.color",
                             UNIFORM::TYPE::FLO3,
-                            value_ptr( l.color ) );
+                            glm::value_ptr( l.color ) );
 
                 setUniform( "uAmbientLightColor",
                             UNIFORM::TYPE::FLO3,
-                            value_ptr( vec3( 0.0f, 0.0f, 0.0f ) ) );
+                            glm::value_ptr( glm::vec3( 0.0f, 0.0f, 0.0f ) ) );
 
                 setUniform( "uCameraView",
                             UNIFORM::TYPE::MAT4,
-                            value_ptr( c.GetViewTransform() ) );
+                            glm::value_ptr( c.GetViewTransform() ) );
                 setUniform( "uCameraPosition",
                             UNIFORM::TYPE::FLO3,
-                            value_ptr( c.m_position ) );
+                            glm::value_ptr( c.Position ) );
 
                 setUniform( "uNormalTexture",
                             UNIFORM::TYPE::TEX2,

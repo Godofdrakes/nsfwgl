@@ -38,7 +38,7 @@ namespace nsfw {
 
             const char* shadowTextureNames[] = { "ShadowDepth" };
             const GLenum shadowDepths[] = { GL_DEPTH_COMPONENT };
-            a.makeFBO( "ShadowPass", w.getWidth() * 2, w.getWidth() * 2, 1, shadowTextureNames, shadowDepths );
+            a.makeFBO( "ShadowPass", 1024, 1024, 1, shadowTextureNames, shadowDepths );
 
             // Load Shaders
             a.loadShader( "GeometryPassPhong",

@@ -6,7 +6,8 @@ layout( location=2 ) in vec4 Tangent;
 layout( location=3 ) in vec2 TexCoord;
 
 uniform mat4 uLightMatrix;
+uniform mat4 uModel;
 
 void main() {
-    gl_Position = uLightMatrix * Position;
+    gl_Position = uLightMatrix * uModel * Position;
 }

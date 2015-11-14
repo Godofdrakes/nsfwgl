@@ -19,6 +19,9 @@
     <Filter Include="Header Files\Objects">
       <UniqueIdentifier>{68e26eeb-b2f2-4190-a60c-0f6e40daaa90}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Particles">
+      <UniqueIdentifier>{f968b3a2-ebba-47ce-9c44-6c8603cd3902}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -26,6 +29,9 @@
     </ClCompile>
     <ClCompile Include="FlyCamera.cpp">
       <Filter>Header Files\Objects</Filter>
+    </ClCompile>
+    <ClCompile Include="ParticleEmitter.cpp">
+      <Filter>Header Files\Particles</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -61,6 +67,12 @@
     </ClInclude>
     <ClInclude Include="FlyCamera.h">
       <Filter>Header Files\Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="Particle.h">
+      <Filter>Header Files\Particles</Filter>
+    </ClInclude>
+    <ClInclude Include="ParticleEmitter.h">
+      <Filter>Header Files\Particles</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

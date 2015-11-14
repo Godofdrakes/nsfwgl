@@ -134,6 +134,7 @@
   <ItemGroup>
     <ClCompile Include="FlyCamera.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="ParticleEmitter.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera.h" />
@@ -141,6 +142,8 @@
     <ClInclude Include="FlyCamera.h" />
     <ClInclude Include="Geometry.h" />
     <ClInclude Include="Light.h" />
+    <ClInclude Include="Particle.h" />
+    <ClInclude Include="ParticleEmitter.h" />
     <ClInclude Include="RenderPass_Geometry.h" />
     <ClInclude Include="RenderPass_Composite.h" />
     <ClInclude Include="RenderPass_GlobalDirectionalLight.h" />

@@ -389,9 +389,11 @@ void nsfw::Assets::init() {
 
     // Fallback assets
     const std::vector<char> white( { ( char )255, ( char )255, ( char )255, ( char )255, ( char )255, ( char )255, ( char )255, ( char )255, ( char )255, ( char )255, ( char )255, ( char )255, ( char )255, ( char )255, ( char )255, ( char )255 } );
-    const std::vector<char> black( { 0, 0, 0, ( char )255, 0, 0, 0, ( char )255, 0, 0, 0, ( char )255, 0, 0, 0, ( char )255 } );
-    makeTexture( "Fallback_White", 2, 2, gl::GLenum::GL_RGBA, white.data() );
-    makeTexture( "Fallback_Black", 2, 2, gl::GLenum::GL_RGBA, black.data() );
+    const std::vector<char> blue( { ( char )0, ( char )0, ( char )255, ( char )0, ( char )0, ( char )0, ( char )255, ( char )0, ( char )0, ( char )0, ( char )255, ( char )0, ( char )0, ( char )0, ( char )255, ( char )0 } );
+    const std::vector<char> black( { ( char )0, ( char )0, ( char )0, ( char )0, ( char )0, ( char )0, ( char )0, ( char )0, ( char )0, ( char )0, ( char )0, ( char )0, ( char )0, ( char )0, ( char )0, ( char )0 } );
+    makeTexture( "Fallback_Diffuse", 2, 2, gl::GLenum::GL_RGBA, white.data() );
+    makeTexture( "Fallback_Normal", 2, 2, gl::GLenum::GL_RGBA, blue.data() );
+    makeTexture( "Fallback_Specular", 2, 2, gl::GLenum::GL_RGBA, black.data() );
 }
 
 void nsfw::Assets::term() {

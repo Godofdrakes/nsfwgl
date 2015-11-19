@@ -91,9 +91,9 @@ namespace nsfw {
 
             m_soulspear[3].mesh = "Quad";
             m_soulspear[3].tris = "Quad";
-            m_soulspear[3].diffuse = "Fallback_White";
-            m_soulspear[3].normal = "Fallback_Black";
-            m_soulspear[3].specular = "Fallback_Black";
+            m_soulspear[3].diffuse = "Fallback_Diffuse";
+            m_soulspear[3].normal = "Fallback_Normal";
+            m_soulspear[3].specular = "Fallback_Specular";
             m_soulspear[3].specPower = 0.0f;
             m_soulspear[3].Position = glm::vec3( 0, -3, 0 );
             m_soulspear[3].Rotation = glm::vec3( 90.0f, 0.0f, 0.0f );

@@ -32,7 +32,6 @@ namespace nsfw {
             }
 
             void draw( const camera::Camera& c, const Geometry& g ) {
-                using namespace gl;
                 setUniform( "uProjection",
                             UNIFORM::TYPE::MAT4,
                             glm::value_ptr( c.GetProjection() ) );
@@ -42,19 +41,25 @@ namespace nsfw {
                 setUniform( "uModel",
                             UNIFORM::TYPE::MAT4,
                             glm::value_ptr( g.GetWorldTransform() ) );
-                setUniform( "uColor",
-                            UNIFORM::FLO4,
-                            glm::value_ptr( glm::vec4( 1.0f ) ) );
-
-                setUniform( "uSpecularLightPower",
-                            UNIFORM::FLO1,
-                            &g.specPower );
 
                 setUniform( "uAlbedo",
                             UNIFORM::TEX2,
                             g.diffuse,
                             0 );
+                setUniform( "uNormalMap",
+                            UNIFORM::TEX2,
+                            g.normal,
+                            1 );
 
+                setUniform( "uSpecularLightPower",
+                            UNIFORM::FLO1,
+                            &g.specPower );
+
+                setUniform( "uColor",
+                            UNIFORM::FLO4,
+                            glm::value_ptr( glm::vec4( 1.0f ) ) );
+
+                using namespace gl;
                 glBindVertexArray( Assets::instance().get( g.mesh ) );
                 glDrawElements( GLenum::GL_TRIANGLES,
                                 Assets::instance().get( g.tris ),

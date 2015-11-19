@@ -42,6 +42,9 @@ namespace nsfw {
                 setUniform( "uModel",
                             UNIFORM::TYPE::MAT4,
                             glm::value_ptr( g.GetWorldTransform() ) );
+                setUniform( "uColor",
+                            UNIFORM::FLO4,
+                            glm::value_ptr( glm::vec4( 1.0f ) ) );
 
                 setUniform( "uSpecularLightPower",
                             UNIFORM::FLO1,
@@ -49,7 +52,8 @@ namespace nsfw {
 
                 setUniform( "uAlbedo",
                             UNIFORM::TEX2,
-                            g.diffuse );
+                            g.diffuse,
+                            0 );
 
                 glBindVertexArray( Assets::instance().get( g.mesh ) );
                 glDrawElements( GLenum::GL_TRIANGLES,

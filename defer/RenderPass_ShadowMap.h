@@ -9,7 +9,7 @@ namespace nsfw {
 
         public:
             RenderPass_ShadowMap( const char* shaderName, const char* fboName )
-                : RenderPass( shaderName, fboName ), depth( "ShadowPass" ) {}
+                : RenderPass( shaderName, fboName ), depth( "ShadowFBO" ) {}
 
             virtual void prep() override {
                 using namespace gl;

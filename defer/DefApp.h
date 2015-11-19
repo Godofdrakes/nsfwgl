@@ -20,7 +20,7 @@ namespace nsfw {
             rendering::RenderPass_Geometry* m_geometryPass;
             rendering::RenderPass_GlobalDirectionalLight* m_directionalLightPass;
             rendering::RenderPass_Composite* m_compositePass;
-            rendering::RenderPass_ShadowMap* m_shadowPass;
+            rendering::RenderPass_ShadowMap* m_shadowShader;
 
         public:
             virtual void onInit() override;

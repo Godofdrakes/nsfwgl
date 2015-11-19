@@ -30,27 +30,27 @@ namespace nsfw {
             // Setup FBOs
             const char* gpassTextureNames[] = { "GPassAlbedo","GPassPosition","GPassNormal","GPassDepth" };
             const GLenum gpassDepths[] = { GL_RGB8, GL_RGBA32F, GL_RGB32F, GL_DEPTH_COMPONENT };
-            a.makeFBO( "GeometryPass", w.getWidth(), w.getHeight(), 4, gpassTextureNames, gpassDepths );
+            a.makeFBO( "GeometryFBO", w.getWidth(), w.getHeight(), 4, gpassTextureNames, gpassDepths );
 
             const char* lpassTextureNames[] = { "LPassColor" };
             const GLenum lpassDepths[] = { GL_RGB8 };
-            a.makeFBO( "LightPass", w.getWidth(), w.getHeight(), 1, lpassTextureNames, lpassDepths );
+            a.makeFBO( "DirectionalLightFBO", w.getWidth(), w.getHeight(), 1, lpassTextureNames, lpassDepths );
 
             const char* shadowTextureNames[] = { "ShadowDepth" };
             const GLenum shadowDepths[] = { GL_DEPTH_COMPONENT };
-            a.makeFBO( "ShadowPass", 1024, 1024, 1, shadowTextureNames, shadowDepths );
+            a.makeFBO( "ShadowFBO", 1024, 1024, 1, shadowTextureNames, shadowDepths );
 
             // Load Shaders
-            a.loadShader( "GeometryPassPhong",
+            a.loadShader( "GeometryShader",
                           "./Assets/Shaders/Geometry/Vertex.glsl",
                           "./Assets/Shaders/Geometry/Fragment.glsl" );
-            a.loadShader( "LightPassDirectional",
+            a.loadShader( "DirectionalLightShader",
                           "./Assets/Shaders/Lighting/Global_Directional/Vertex.glsl",
                           "./Assets/Shaders/Lighting/Global_Directional/Fragment.glsl" );
-            a.loadShader( "CompPass",
+            a.loadShader( "CompositeShader",
                           "./Assets/Shaders/Composite/Vertex.glsl",
                           "./Assets/Shaders/Composite/Fragment.glsl" );
-            a.loadShader( "ShadowPass",
+            a.loadShader( "ShadowShader",
                           "./Assets/Shaders/Shadows/Vertex.glsl",
                           "./Assets/Shaders/Shadows/Fragment.glsl" );
 
@@ -99,10 +99,10 @@ namespace nsfw {
             m_soulspear[3].Rotation = glm::vec3( 90.0f, 0.0f, 0.0f );
             m_soulspear[3].Scale = glm::vec3( 20, 20, 1 );
 
-            m_geometryPass = new rendering::RenderPass_Geometry( "GeometryPassPhong", "GeometryPass" );
-            m_directionalLightPass = new rendering::RenderPass_GlobalDirectionalLight( "LightPassDirectional", "LightPass" );
-            m_compositePass = new rendering::RenderPass_Composite( "CompPass", "Screen" ); // Screen is defined in nsfw::Assets::init()
-            m_shadowPass = new rendering::RenderPass_ShadowMap( "ShadowPass", "ShadowPass" );
+            m_geometryPass = new rendering::RenderPass_Geometry( "GeometryShader", "GeometryFBO" );
+            m_directionalLightPass = new rendering::RenderPass_GlobalDirectionalLight( "DirectionalLightShader", "DirectionalLightFBO" );
+            m_compositePass = new rendering::RenderPass_Composite( "CompositeShader", "Screen" ); // Screen is defined in nsfw::Assets::init()
+            m_shadowShader = new rendering::RenderPass_ShadowMap( "ShadowShader", "ShadowFBO" );
         }
 
         void DeferredApplication::onStep() {
@@ -120,12 +120,12 @@ namespace nsfw {
             m_geometryPass->draw( *m_camera, m_soulspear[3] );
             m_geometryPass->post();
 
-            m_shadowPass->prep();
-            m_shadowPass->draw( *m_directional, m_soulspear[0] );
-            m_shadowPass->draw( *m_directional, m_soulspear[1] );
-            m_shadowPass->draw( *m_directional, m_soulspear[2] );
-            m_shadowPass->draw( *m_directional, m_soulspear[3] );
-            m_shadowPass->post();
+            m_shadowShader->prep();
+            m_shadowShader->draw( *m_directional, m_soulspear[0] );
+            m_shadowShader->draw( *m_directional, m_soulspear[1] );
+            m_shadowShader->draw( *m_directional, m_soulspear[2] );
+            m_shadowShader->draw( *m_directional, m_soulspear[3] );
+            m_shadowShader->post();
 
             // TODO: Apply shadows to lighting
 

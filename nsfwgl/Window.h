@@ -17,6 +17,7 @@ namespace nsfw {
     class Window {
         GLFWwindow* window;
         unsigned width, height; // keep track of width height- needed for glViewport FBO integration
+        double m_timeOld, m_timeNew;
 
         Window() : window( nullptr ), width( 0 ), height( 0 ) {}
 
@@ -36,6 +37,7 @@ namespace nsfw {
         void term();
 
         // just wrap what GLFW already does
+        float GetDeltaTime() const;
         float getTime() const;
         bool getKey( unsigned k ) const;
         bool getShouldClose() const;

@@ -2,6 +2,7 @@
 #include <unordered_map>
 #include <string>
 #include <glbinding/gl/enum.h>
+#include <glbinding/gl/types.h>
 
 /*
 	The asset management object is a place to keep track of all of the memory
@@ -49,9 +50,6 @@ namespace nsfw {
     // Use a handle type and name to use as an index for each asset
     typedef std::pair<ASSET::GL_HANDLE_TYPE, std::string> AssetKey;
 
-    // for explicitness
-    typedef unsigned GL_HANDLE;
-
     // Asset reference object, used to keep a type and name associated with the
     // manner in which the Assets arranges its keys. This is purely sugar.
     template<ASSET::GL_HANDLE_TYPE T>
@@ -69,7 +67,7 @@ namespace nsfw {
         operator AssetKey() const {
             return AssetKey( t, name );
         } // for use with Assets::Operator[]
-        GL_HANDLE operator*() const {
+        gl::GLuint operator*() const {
             return Assets::instance()[*this];
         } // Overload value-of operator, to dereference
         const void* operator&() const {
@@ -98,13 +96,13 @@ namespace nsfw {
         };
 
         // Store all of our keys in one place!
-        std::unordered_map<AssetKey, GL_HANDLE, Hash> handles;
+        std::unordered_map<AssetKey, gl::GLuint, Hash> handles;
 
         Assets() {}
 
-        GL_HANDLE getVERIFIED( const AssetKey& key ) const;
+        gl::GLuint getVERIFIED( const AssetKey& key ) const;
 
-        bool setINTERNAL( ASSET::GL_HANDLE_TYPE t, const char* name, GL_HANDLE handle );
+        bool setINTERNAL( ASSET::GL_HANDLE_TYPE t, const char* name, gl::GLuint handle );
 
     public:
         // Singleton accessor
@@ -114,23 +112,23 @@ namespace nsfw {
         }
 
         //normal get handle function
-        GL_HANDLE get( ASSET::GL_HANDLE_TYPE t, const char* name ) const {
+        gl::GLuint get( ASSET::GL_HANDLE_TYPE t, const char* name ) const {
             return getVERIFIED( AssetKey( t, name ) );
         }
 
         //templated Get,for sexiness
         template<ASSET::GL_HANDLE_TYPE t>
-        GL_HANDLE get( const char* name ) const {
+        gl::GLuint get( const char* name ) const {
             return getVERIFIED( AssetKey( t, name ) );
         }
 
         // Get via the Asset reference, sexier
-        GL_HANDLE get( const AssetKey& key ) const {
+        gl::GLuint get( const AssetKey& key ) const {
             return getVERIFIED( key );
         }
 
         //Conveniently fetch handle using an Asset object, for even more sexy
-        GL_HANDLE operator[]( const AssetKey& key ) const {
+        gl::GLuint operator[]( const AssetKey& key ) const {
             return getVERIFIED( key );
         }
 

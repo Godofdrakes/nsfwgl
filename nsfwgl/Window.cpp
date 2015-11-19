@@ -15,6 +15,8 @@ void nsfw::Window::init( unsigned width, unsigned height ) {
 void nsfw::Window::step() {
     glfwPollEvents();
     glfwSwapBuffers( window );
+    m_timeOld = m_timeNew;
+    m_timeNew = glfwGetTime();
 }
 
 void nsfw::Window::term() {
@@ -23,8 +25,12 @@ void nsfw::Window::term() {
     window = nullptr;
 }
 
+float nsfw::Window::GetDeltaTime() const {
+    return ( float )m_timeNew - m_timeOld;
+}
+
 float nsfw::Window::getTime() const {
-    return ( float )glfwGetTime();
+    return ( float )m_timeNew;
 }
 
 bool nsfw::Window::getKey( unsigned k ) const {

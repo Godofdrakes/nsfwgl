@@ -18,7 +18,7 @@ const char* nsfw::TYPE_NAMES[eSIZE + 1] = { "NONE","vao","ibo","vbo","tri-size",
 #define ASSET_LOG(type) do {} while (0)
 #endif
 
-nsfw::GL_HANDLE nsfw::Assets::getVERIFIED( const AssetKey& key ) const {
+gl::GLuint nsfw::Assets::getVERIFIED( const AssetKey& key ) const {
     if ( !handles.count( key ) ) {
 #ifdef _DEBUG
         std::cerr << "Asset Key not found: <" << TYPE_NAMES[key.first] << ">" << key.second << std::endl;
@@ -29,7 +29,7 @@ nsfw::GL_HANDLE nsfw::Assets::getVERIFIED( const AssetKey& key ) const {
     return handles.at( key );
 }
 
-bool nsfw::Assets::setINTERNAL( ASSET::GL_HANDLE_TYPE t, const char* name, GL_HANDLE handle ) {
+bool nsfw::Assets::setINTERNAL( ASSET::GL_HANDLE_TYPE t, const char* name, gl::GLuint handle ) {
     AssetKey key( t, name );
 #ifdef _DEBUG
     if ( handles.count( key ) ) {

@@ -9,10 +9,11 @@ out vec4 vPosition;
 out vec4 vNormal;
 out vec2 vTexCoord;
 
-uniform mat4 uProjection = mat4( 1 );
-uniform mat4 uView       = mat4( 1 );
-uniform mat4 uModel      = mat4( 1 );
+uniform mat4 uProjection          = mat4( 1 );
+uniform mat4 uView                = mat4( 1 );
+uniform mat4 uModel               = mat4( 1 );
 uniform float uSpecularLightPower = 0;
+
 uniform sampler2D uNormalMap;
 uniform sampler2D uSpecularMap;
 
@@ -20,13 +21,13 @@ void main() {
     vPosition = uView * uModel * Position;
     vPosition.w = uSpecularLightPower;
 
-    vec4 modelNormal = uModel * Normal;
-    vec4 modelTangent = uModel * Tangent;
-    vec4 binormal = vec4( cross( modelNormal.xyz, modelTangent.xyz ), 0 );
-    mat4 tbn = mat4( modelNormal, binormal, modelNormal, vec4( 0 ) );
+    vec4 normalSample = vec4( normalize( texture( uNormalMap, TexCoord ).xyz * 2 - 1 ), 0 );
 
-    vec4 normalSample = texture( uNormalMap, TexCoord ) * 2 - 1;
-    vNormal = normalize( uView * tbn * normalSample );
+    vec4 Binormal = vec4( normalize( cross( Normal.xyz, Tangent.xyz ) ), 0 );
+
+    mat4 tbn = uModel * mat4( Tangent, Binormal, Normal, vec4( 0, 0, 0, 1 ) );
+
+    vNormal = uView * tbn * normalSample;
     vTexCoord = TexCoord;
     gl_Position = uProjection * uView * uModel * Position;
 }

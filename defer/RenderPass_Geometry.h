@@ -5,6 +5,7 @@
 #include "Camera.h"
 #include "Geometry.h"
 #include "glbinding/gl/gl.h"
+#include "ParticleEmitter.h"
 
 namespace nsfw {
     namespace rendering {
@@ -51,6 +52,8 @@ namespace nsfw {
                             g.normal,
                             1 );
 
+                // TODO: Finish wonky normal mapping on the floor
+
                 setUniform( "uSpecularLightPower",
                             UNIFORM::FLO1,
                             &g.specPower );
@@ -65,7 +68,50 @@ namespace nsfw {
                                 Assets::instance().get( g.tris ),
                                 GL_UNSIGNED_INT,
                                 0 );
+            }
 
+            void draw( const camera::Camera& c, const particles::ParticleEmitter& p ) {
+                for ( auto iter = p.Get_Particles().begin(); iter != p.Get_Particles().end(); ++iter ) {
+                    const particles::Particle& particle = *iter;
+                    if ( particle.IsAlive() == false ) {
+                        continue;
+                    }
+
+                    setUniform( "uProjection",
+                                UNIFORM::TYPE::MAT4,
+                                glm::value_ptr( c.GetProjection() ) );
+                    setUniform( "uView",
+                                UNIFORM::TYPE::MAT4,
+                                glm::value_ptr( c.GetViewTransform() ) );
+                    setUniform( "uModel",
+                                UNIFORM::TYPE::MAT4,
+                                glm::value_ptr( particle.GetWorldTransform() ) );
+
+                    setUniform( "uAlbedo",
+                                UNIFORM::TEX2,
+                                Asset<ASSET::TEXTURE>( "Fallback_Diffuse" ),
+                                0 );
+                    setUniform( "uNormalMap",
+                                UNIFORM::TEX2,
+                                Asset<ASSET::TEXTURE>( "Fallback_Normal" ),
+                                1 );
+
+                    float specular = 0.0f;
+                    setUniform( "uSpecularLightPower",
+                                UNIFORM::FLO1,
+                                &specular );
+
+                    setUniform( "uColor",
+                                UNIFORM::FLO4,
+                                glm::value_ptr( particle.Get_Color() ) );
+
+                    using namespace gl;
+                    glBindVertexArray( Assets::instance().get<ASSET::VAO>( "Quad" ) );
+                    glDrawElements( GLenum::GL_TRIANGLES,
+                                    Assets::instance().get<ASSET::SIZE>( "Quad" ),
+                                    GL_UNSIGNED_INT,
+                                    0 );
+                }
             }
         };
     }

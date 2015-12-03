@@ -22,6 +22,8 @@ namespace nsfw {
             rendering::RenderPass_Composite* m_compositePass;
             rendering::RenderPass_ShadowMap* m_shadowShader;
 
+            particles::ParticleEmitter* m_particleEmitter;
+
         public:
             virtual void onInit() override;
             virtual void onStep() override;

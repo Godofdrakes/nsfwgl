@@ -103,11 +103,34 @@ namespace nsfw {
             m_directionalLightPass = new rendering::RenderPass_GlobalDirectionalLight( "DirectionalLightShader", "DirectionalLightFBO" );
             m_compositePass = new rendering::RenderPass_Composite( "CompositeShader", "Screen" ); // Screen is defined in nsfw::Assets::init()
             m_shadowShader = new rendering::RenderPass_ShadowMap( "ShadowShader", "ShadowFBO" );
+
+            m_particleEmitter = new particles::ParticleEmitter();
         }
 
         void DeferredApplication::onStep() {
             m_directional->Update();
             m_directional->Position = glm::normalize( glm::vec3( sin( Window::instance().getTime() ), m_directional->Position.y, m_directional->Position.z ) );
+
+            static bool emit = false;
+            // Space Bar
+            if ( Window::instance().getKey( 32 ) == true && emit == false ) {
+                particles::Particle settings;
+                settings.startSpeed = glm::sphericalRand( 1.0f );
+                settings.lifeSpan = 5.0f;
+                settings.startScale = glm::vec3( 0.25f );
+                settings.endScale = glm::vec3( 0.50f );
+                settings.startColor = glm::vec4( 0.0f, 1.0f, 0.0f, 0.0f );
+                settings.endColor = glm::vec4( 1.0f, 0.0f, 0.0f, 0.0f );
+                m_particleEmitter->settings = settings;
+
+                m_particleEmitter->Emit();
+                emit = true;
+            }
+            else if ( Window::instance().getKey( 32 ) == false && emit == true ) {
+                emit = false;
+            }
+
+            m_particleEmitter->Update();
 
             m_camera->Update();
             m_soulspear->Update();
@@ -117,6 +140,7 @@ namespace nsfw {
             m_geometryPass->draw( *m_camera, m_soulspear[1] );
             m_geometryPass->draw( *m_camera, m_soulspear[2] );
             m_geometryPass->draw( *m_camera, m_soulspear[3] );
+            m_geometryPass->draw( *m_camera, *m_particleEmitter );
             m_geometryPass->post();
 
             m_shadowShader->prep();
@@ -143,6 +167,8 @@ namespace nsfw {
             delete m_compositePass;
             delete m_geometryPass;
             delete m_directionalLightPass;
+
+            delete m_particleEmitter;
         }
     }
 }

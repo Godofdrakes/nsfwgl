@@ -11,13 +11,26 @@ namespace nsfw {
             ParticleEmitter();
             virtual ~ParticleEmitter();
 
+            Particle settings;
+            unsigned int maxParticles;
+
+
             virtual void Emit();
             virtual void Update();
 
+            const std::vector<particles::Particle>& Get_Particles() const {
+                return m_particles;
+            }
+
+            unsigned int Get_ParticleCount() const {
+                return m_particleCount;
+            }
+
         protected:
-            std::vector<Particle> m_particles;
-            virtual bool ParticleSort( const Particle& left, const Particle& right );
-            virtual Particle& AddParticle(); // Returns the first dead particle, or adds a new dead particle to the vector and returns it.
+            unsigned int m_particleCount;
+            unsigned int m_vao, m_vbo, m_ibo;
+            std::vector<particles::Particle> m_particles;
+            Particle& AddParticle( Particle settings = Particle() );
 
         private:
 

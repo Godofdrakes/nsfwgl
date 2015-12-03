@@ -1,7 +1,7 @@
 #pragma once
 
 #include <glm/glm.hpp>
-#include <glm/gtx/transform.hpp>
+#include <glm/ext.hpp>
 
 namespace nsfw {
 
@@ -12,10 +12,12 @@ namespace nsfw {
         glm::vec3 m_scale;
     public:
         // Constructors
-        Transform() : Transform( glm::vec3( 0.0f ), glm::vec3( 0.0f ), glm::vec3( 1.0f ) ) {}
-
-        Transform( glm::vec3 position, glm::vec3 rotation, glm::vec3 scale ) :
-            m_position( position ), m_rotation( rotation ), m_scale( scale ) {}
+        Transform( glm::vec3 position = glm::vec3( 0 ),
+                   glm::vec3 rotation = glm::vec3( 0 ),
+                   glm::vec3 scale = glm::vec3( 1 ) ) :
+            m_position( position ),
+            m_rotation( rotation ),
+            m_scale( scale ) {}
 
         virtual ~Transform() {}
 
@@ -54,15 +56,16 @@ namespace nsfw {
 
         // Matrix Getters
         virtual glm::mat4 GetRoationMatrix() const {
-            return glm::rotate( m_rotation.z, glm::vec3( 0, 0, 1 ) ) *
-                    glm::rotate( m_rotation.y, glm::vec3( 0, 1, 0 ) ) *
-                    glm::rotate( m_rotation.x, glm::vec3( 1, 0, 0 ) );
+            glm::vec3 rot = Get_Rotation();
+            return glm::rotate( rot.z, glm::vec3( 0, 0, 1 ) ) *
+                    glm::rotate( rot.y, glm::vec3( 0, 1, 0 ) ) *
+                    glm::rotate( rot.x, glm::vec3( 1, 0, 0 ) );
         }
 
         virtual glm::mat4 GetWorldTransform() const {
-            return glm::translate( m_position ) *
+            return glm::translate( Get_Position() ) *
                     GetRoationMatrix() *
-                    glm::scale( m_scale );
+                    glm::scale( Get_Scale() );
         }
     };
 

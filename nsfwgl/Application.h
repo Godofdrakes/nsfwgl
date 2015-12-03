@@ -8,22 +8,23 @@ namespace nsfw {
     class Application {
     public:
         Application() {}
+
         virtual ~Application() {}
 
         virtual void onInit() {
-            #pragma message ( "Override this and load everything" )
+#pragma message ( "Override this and load everything" )
         };
 
         virtual void onTerm() {
-            #pragma message ( "Override this and unload everything" )
+#pragma message ( "Override this and unload everything" )
         };
 
         virtual void onPlay() {
-            #pragma message ( "Override this and start the game" )
+#pragma message ( "Override this and start the game" )
         };
 
         virtual void onStep() {
-            #pragma message ( "Override this and update and draw" )
+#pragma message ( "Override this and update and draw" )
         };
 
         void init( int width = 800, int height = 600, const char* name = "Not Suited For Work" ) {
@@ -38,20 +39,20 @@ namespace nsfw {
             gl::glGetIntegerv( gl::GLenum::GL_MINOR_VERSION, &minor );
             std::cout << "OpenGL Version: " << major << "." << minor << std::endl;
 
-        #ifdef _DEBUG
+#ifdef _DEBUG
             // glbinding provides the ability to set callback functions for any and all OpenGL function calls
             // The folowing is the equivilant of calling glGetError() after EVERY SINGLE OpenGL call.
             // Performance hit? Probably. Do I care? Not right now, no.
             glbinding::setCallbackMaskExcept( glbinding::CallbackMask::After, { "glGetError" } );
-            glbinding::setAfterCallback( []( const glbinding::FunctionCall & ) {
-                using namespace gl;
-                GLenum error = glGetError();
-                if ( error != GL_NO_ERROR ) {
-                    std::cout << "ERROR: " << std::hex << error << std::endl;
-                    assert( false );
-                }
-            } );
-        #endif
+            glbinding::setAfterCallback( []( const glbinding::FunctionCall&) {
+                                            using namespace gl;
+                                            GLenum error = glGetError();
+                                            if ( error != GL_NO_ERROR ) {
+                                                std::cout << "ERROR: " << std::hex << error << std::endl;
+                                                assert( false );
+                                            }
+                                        } );
+#endif
 
             Assets::instance().init(); // Initialize the asset manager
             onInit();

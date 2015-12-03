@@ -95,7 +95,7 @@ namespace nsfw {
             m_soulspear[3].normal = "Fallback_Normal";
             m_soulspear[3].specular = "Fallback_Specular";
             m_soulspear[3].specPower = 0.0f;
-            m_soulspear[3].Position = glm::vec3( 0, -3, 0 );
+            m_soulspear[3].Position = glm::vec3( 0.0f, -3.0f, 0.0f);
             m_soulspear[3].Rotation = glm::vec3( 90.0f, 0.0f, 0.0f );
             m_soulspear[3].Scale = glm::vec3( 20, 20, 1 );
 
@@ -106,7 +106,6 @@ namespace nsfw {
         }
 
         void DeferredApplication::onStep() {
-
             m_directional->Update();
             m_directional->Position = glm::normalize( glm::vec3( sin( Window::instance().getTime() ), m_directional->Position.y, m_directional->Position.z ) );
 
@@ -126,8 +125,6 @@ namespace nsfw {
             m_shadowShader->draw( *m_directional, m_soulspear[2] );
             m_shadowShader->draw( *m_directional, m_soulspear[3] );
             m_shadowShader->post();
-
-            // TODO: Apply shadows to lighting
 
             m_directionalLightPass->prep();
             m_directionalLightPass->draw( *m_camera, *m_directional );

@@ -31,6 +31,7 @@ namespace nsfw {
             unsigned int m_vao, m_vbo, m_ibo;
             std::vector<particles::Particle> m_particles;
             Particle& AddParticle( Particle settings = Particle() );
+            bool dirty;
 
         private:
 

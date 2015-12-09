@@ -10,9 +10,14 @@ layout( location = 2 ) out vec3 gpassNormal;
 
 uniform sampler2D uAlbedo;
 uniform vec4 uColor = vec4( 1.0, 1.0, 1.0, 1.0 );
+uniform int uUseTexture = 0;
 
 void main() {
-    gpassAlbedo = texture( uAlbedo, vTexCoord ).xyz * uColor.xyz;
+    if( uUseTexture > 0 ) {
+        gpassAlbedo = texture( uAlbedo, vTexCoord ).xyz * uColor.xyz;
+    } else {
+        gpassAlbedo = vec4( 1.0, 1.0, 1.0, 1.0 ).xyz;
+    }
     gpassPosition = vPosition;
     gpassNormal = vNormal.xyz;
 }

@@ -71,7 +71,7 @@ namespace nsfw {
                             UNIFORM::MAT4,
                             glm::value_ptr( l.textureSpaceOffset * l.GetLightMatrix() ) );
 
-                if ( enableShadows == gl::GLboolean::GL_TRUE ) {
+                if ( enableShadows == GLboolean::GL_TRUE ) {
                     setUniform( "uEnableShadows",
                                 UNIFORM::INT1,
                                 &enableShadows );

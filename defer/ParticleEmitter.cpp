@@ -10,7 +10,7 @@ namespace nsfw {
             settings(), maxParticles( 25 ),
             m_particleCount( 0 ),
             m_vao( 0 ), m_vbo( 0 ), m_ibo( 0 ),
-            m_particles( maxParticles ) { }
+            m_particles( maxParticles ), dirty( false ) { }
 
         ParticleEmitter::~ParticleEmitter() { }
 
@@ -28,8 +28,7 @@ namespace nsfw {
                     continue;
                 }
                 // Logic
-                float lerpValue = p.lifeTime / p.lifeSpan;
-                p.Position += glm::lerp( p.startSpeed, p.endSpeed, lerpValue );
+                p.Position += glm::normalize( p.direction ) * p.Get_Speed();
                 p.lifeTime += delta;
             }
             if ( shouldSort ) {
@@ -58,3 +57,4 @@ namespace nsfw {
 
     }
 }
+

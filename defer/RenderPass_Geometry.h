@@ -52,7 +52,10 @@ namespace nsfw {
                             g.normal,
                             1 );
 
-                // TODO: Finish wonky normal mapping on the floor
+                const gl::GLint thing = 1;
+                setUniform( "uUseTexture",
+                            UNIFORM::INT1,
+                            &thing );
 
                 setUniform( "uSpecularLightPower",
                             UNIFORM::FLO1,
@@ -96,6 +99,11 @@ namespace nsfw {
                                 Asset<ASSET::TEXTURE>( "Fallback_Normal" ),
                                 1 );
 
+                    const gl::GLint thing = 0;
+                    setUniform( "uUseTexture",
+                                UNIFORM::INT1,
+                                &thing );
+
                     float specular = 0.0f;
                     setUniform( "uSpecularLightPower",
                                 UNIFORM::FLO1,
@@ -116,3 +124,4 @@ namespace nsfw {
         };
     }
 }
+

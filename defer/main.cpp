@@ -95,7 +95,7 @@ namespace nsfw {
             m_soulspear[3].normal = "Fallback_Normal";
             m_soulspear[3].specular = "Fallback_Specular";
             m_soulspear[3].specPower = 0.0f;
-            m_soulspear[3].Position = glm::vec3( 0.0f, -3.0f, 0.0f);
+            m_soulspear[3].Position = glm::vec3( 0.0f, -3.0f, 0.0f );
             m_soulspear[3].Rotation = glm::vec3( 90.0f, 0.0f, 0.0f );
             m_soulspear[3].Scale = glm::vec3( 20, 20, 1 );
 
@@ -105,24 +105,29 @@ namespace nsfw {
             m_shadowShader = new rendering::RenderPass_ShadowMap( "ShadowShader", "ShadowFBO" );
 
             m_particleEmitter = new particles::ParticleEmitter();
+
+            m_particleEmitter->settings = particles::Particle( glm::vec3( 0.0f ),
+                                                               glm::vec3( 0.0f, 0.0f, 1.0f ),
+                                                               0.5f,
+                                                               0.0f,
+                                                               glm::vec4( 0.0f, 1.0f, 0.0f, 1.0f ),
+                                                               glm::vec4( 1.0f, 0.0f, 0.0f, 1.0f ),
+                                                               glm::vec3( 0.50f ),
+                                                               glm::vec3( 0.25f ),
+                                                               5.0f );
+
         }
 
         void DeferredApplication::onStep() {
             m_directional->Update();
-            m_directional->Position = glm::normalize( glm::vec3( sin( Window::instance().getTime() ), m_directional->Position.y, m_directional->Position.z ) );
+            m_directional->Position = glm::normalize( glm::vec3( sin( Window::instance().getTime() ),
+                                                                 m_directional->Position.y,
+                                                                 m_directional->Position.z ) );
 
             static bool emit = false;
             // Space Bar
             if ( Window::instance().getKey( 32 ) == true && emit == false ) {
-                particles::Particle settings;
-                settings.startSpeed = glm::sphericalRand( 1.0f );
-                settings.lifeSpan = 5.0f;
-                settings.startScale = glm::vec3( 0.25f );
-                settings.endScale = glm::vec3( 0.50f );
-                settings.startColor = glm::vec4( 0.0f, 1.0f, 0.0f, 0.0f );
-                settings.endColor = glm::vec4( 1.0f, 0.0f, 0.0f, 0.0f );
-                m_particleEmitter->settings = settings;
-
+                m_particleEmitter->settings.direction = glm::normalize( glm::ballRand( 1.0f ) + glm::vec3( 0.0f, 0.0f, 5.0f ) );
                 m_particleEmitter->Emit();
                 emit = true;
             }
@@ -172,3 +177,4 @@ namespace nsfw {
         }
     }
 }
+

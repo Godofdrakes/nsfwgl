@@ -16,7 +16,7 @@ void main() {
     if( uUseTexture > 0 ) {
         gpassAlbedo = texture( uAlbedo, vTexCoord ).xyz * uColor.xyz;
     } else {
-        gpassAlbedo = vec4( 1.0, 1.0, 1.0, 1.0 ).xyz;
+        gpassAlbedo = uColor.xyz;
     }
     gpassPosition = vPosition;
     gpassNormal = vNormal.xyz;

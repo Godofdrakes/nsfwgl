@@ -27,6 +27,7 @@ namespace nsfw {
                 glm::vec3 endScale = glm::vec3( 1.0f ),
                 float lifeSpan = 0.0f )
                 : Transform( position ),
+                  direction( direction ),
                   startSpeed( startSpeed ),
                   endSpeed( endSpeed ),
                   startColor( startColor ),

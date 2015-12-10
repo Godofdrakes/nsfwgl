@@ -52,6 +52,25 @@ namespace nsfw {
                                                 assert( false );
                                             }
                                         } );
+
+            glbinding::Binding::LinkProgram.setAfterCallback( []( const gl::GLuint program ) {
+                                                                 using namespace gl;
+                                                                 GLint success = 0;
+                                                                 glGetProgramiv( program, GL_LINK_STATUS, &success );
+                                                                 if ( success == 0 ) {
+                                                                     using namespace std;
+                                                                     GLint infoLogSize = 0;
+                                                                     glGetProgramiv( program, GL_INFO_LOG_LENGTH, &infoLogSize );
+                                                                     GLchar* infoLog = new char[infoLogSize];
+                                                                     glGetProgramInfoLog( program, infoLogSize, 0, infoLog );
+                                                                     cout << "Error: Failed to link shader program!" << endl;
+                                                                     cout << infoLog << endl;
+                                                                     delete[](infoLog);
+                                                                     glDeleteProgram( program ); // CLEAN UP YOUR SHIT
+                                                                     assert(false);
+                                                                 }
+                                                             }
+                                                            );
 #endif
 
             Assets::instance().init(); // Initialize the asset manager
@@ -79,3 +98,4 @@ namespace nsfw {
         }
     };
 }
+

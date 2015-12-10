@@ -62,10 +62,10 @@ namespace nsfw {
 
     const Vertex QuadVerts[] =
     {
-        { glm::vec4( -1, 1, 0, 1 ), backward, left, glm::vec2( 0, 1 ) },
-        { glm::vec4( 1, 1, 0, 1 ), backward, left, glm::vec2( 1, 1 ) },
-        { glm::vec4( 1, -1, 0, 1 ), backward, left, glm::vec2( 1, 0 ) },
-        { glm::vec4( -1, -1, 0, 1 ), backward, left, glm::vec2( 0, 0 ) },
+        { glm::vec4( -1, 1, 0, 1 ), forward, left, glm::vec2( 0, 1 ) },
+        { glm::vec4( 1, 1, 0, 1 ), forward, left, glm::vec2( 1, 1 ) },
+        { glm::vec4( 1, -1, 0, 1 ), forward, left, glm::vec2( 1, 0 ) },
+        { glm::vec4( -1, -1, 0, 1 ), forward, left, glm::vec2( 0, 0 ) },
     };
 
     const unsigned QuadTris[] = { 3,1,0, 3,2,1 };

@@ -56,17 +56,25 @@ namespace nsfw {
 
         // Matrix Getters
         virtual glm::mat4 GetRoationMatrix() const {
-            glm::vec3 rot = Get_Rotation();
-            return glm::rotate( rot.z, glm::vec3( 0, 0, 1 ) ) *
-                    glm::rotate( rot.y, glm::vec3( 0, 1, 0 ) ) *
-                    glm::rotate( rot.x, glm::vec3( 1, 0, 0 ) );
+            return glm::rotate( Rotation.z, glm::vec3( 0, 0, 1 ) ) *
+                    glm::rotate( Rotation.y, glm::vec3( 0, 1, 0 ) ) *
+                    glm::rotate( Rotation.x, glm::vec3( 1, 0, 0 ) );
+        }
+
+        glm::mat4 GetTranslationMatrix() const {
+            return glm::translate( Position );
+        }
+
+        glm::mat4 GetScaleMatrix() const {
+            return glm::scale( Scale );
         }
 
         virtual glm::mat4 GetWorldTransform() const {
-            return glm::translate( Get_Position() ) *
+            return glm::translate( Position ) *
                     GetRoationMatrix() *
-                    glm::scale( Get_Scale() );
+                    glm::scale( Scale );
         }
     };
 
 }
+

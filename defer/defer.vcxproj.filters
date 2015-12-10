@@ -22,6 +22,9 @@
     <Filter Include="Header Files\Particles">
       <UniqueIdentifier>{f968b3a2-ebba-47ce-9c44-6c8603cd3902}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Particles\GPU Particles">
+      <UniqueIdentifier>{ba691a87-a292-4212-84c0-f40b55f18eb8}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -32,6 +35,9 @@
     </ClCompile>
     <ClCompile Include="ParticleEmitter.cpp">
       <Filter>Header Files\Particles</Filter>
+    </ClCompile>
+    <ClCompile Include="ParticleEmitter_GPU.cpp">
+      <Filter>Header Files\Particles\GPU Particles</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -73,6 +79,9 @@
     </ClInclude>
     <ClInclude Include="ParticleEmitter.h">
       <Filter>Header Files\Particles</Filter>
+    </ClInclude>
+    <ClInclude Include="ParticleEmitter_GPU.h">
+      <Filter>Header Files\Particles\GPU Particles</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

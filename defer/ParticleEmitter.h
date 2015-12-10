@@ -18,7 +18,7 @@ namespace nsfw {
             virtual void Emit();
             virtual void Update();
 
-            const std::vector<particles::Particle>& Get_Particles() const {
+            const std::vector<Particle>& Get_Particles() const {
                 return m_particles;
             }
 
@@ -29,7 +29,7 @@ namespace nsfw {
         protected:
             unsigned int m_particleCount;
             unsigned int m_vao, m_vbo, m_ibo;
-            std::vector<particles::Particle> m_particles;
+            std::vector<Particle> m_particles;
             Particle& AddParticle( Particle settings = Particle() );
             bool dirty;
 

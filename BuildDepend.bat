@@ -10,3 +10,5 @@ Devenv ./dep/glbinding/glbinding.sln /Build Release /project ALL_BUILD
 
 Devenv ./dep/glfw/glfw.sln /Build Debug /project ALL_BUILD
 Devenv ./dep/glfw/glfw.sln /Build Release /project ALL_BUILD
+
+pause

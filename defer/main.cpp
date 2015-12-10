@@ -96,7 +96,7 @@ namespace nsfw {
             m_soulspear[3].specular = "Fallback_Specular";
             m_soulspear[3].specPower = 0.0f;
             m_soulspear[3].Position = glm::vec3( 0.0f, -3.0f, 0.0f );
-            m_soulspear[3].Rotation = glm::vec3( 90.0f, 0.0f, 0.0f );
+            m_soulspear[3].Rotation = glm::vec3( -90.0f, 0.0f, 0.0f );
             m_soulspear[3].Scale = glm::vec3( 20, 20, 1 );
 
             m_geometryPass = new rendering::RenderPass_Geometry( "GeometryShader", "GeometryFBO" );
@@ -114,7 +114,7 @@ namespace nsfw {
                                                                glm::vec4( 1.0f, 0.0f, 0.0f, 1.0f ),
                                                                glm::vec3( 0.50f ),
                                                                glm::vec3( 0.25f ),
-                                                               5.0f );
+                                                               1.0f );
 
         }
 

@@ -56,7 +56,7 @@ namespace nsfw {
             if ( m_updateShader != 0 ) {
                 return;
             }
-            GLuint shader = Assets::instance().compileShader( GL_VERTEX_SHADER, "./Assets/Shader/Particles/Update.glsl" );
+            GLuint shader = Assets::instance().compileShader( GL_VERTEX_SHADER, "./Assets/Shaders/Particles/Update.glsl" );
             GLuint program = glCreateProgram();
             glAttachShader( program, shader );
 
@@ -81,9 +81,9 @@ namespace nsfw {
                 return;
             }
 
-            GLuint vertexShader = Assets::instance().compileShader( GL_VERTEX_SHADER, "./Assets/Shader/Particles/Vertex.glsl" );
-            GLuint fragmentShader = Assets::instance().compileShader( GL_GEOMETRY_SHADER, "./Assets/Shader/Particles/Fragment.glsl" );
-            GLuint geometryShader = Assets::instance().compileShader( GL_FRAGMENT_SHADER, "./Assets/Shader/Particles/Geometry.glsl" );
+            GLuint vertexShader = Assets::instance().compileShader( GL_VERTEX_SHADER, "./Assets/Shaders/Particles/Vertex.glsl" );
+            GLuint fragmentShader = Assets::instance().compileShader( GL_FRAGMENT_SHADER, "./Assets/Shaders/Particles/Fragment.glsl" );
+            GLuint geometryShader = Assets::instance().compileShader( GL_GEOMETRY_SHADER, "./Assets/Shaders/Particles/Geometry.glsl" );
 
             GLuint program = glCreateProgram();
             glAttachShader( program, vertexShader );
@@ -111,16 +111,16 @@ namespace nsfw {
             glUniform1f( glGetUniformLocation( m_updateShader, "deltaTime" ), deltaTime );
             glUniform3fv( glGetUniformLocation( m_updateShader, "emitterPosition" ), 1, glm::value_ptr( Position ) );
 
-            glBindVertexArray( inputBuffer );
+            glBindVertexArray( m_vao[inputBuffer] );
 
             glEnable( GL_RASTERIZER_DISCARD );
-            glBindBufferBase( GL_TRANSFORM_FEEDBACK_BUFFER, 0, outputBuffer );
+            glBindBufferBase( GL_TRANSFORM_FEEDBACK_BUFFER, 0, m_vbo[outputBuffer] );
             glBeginTransformFeedback( GL_POINTS );
 
             glDrawArrays( GL_POINTS, 0, MAX_PARTICLES );
 
             glEndTransformFeedback();
-            glBindBufferBase( GL_TRANSFORM_FEEDBACK, 0, 0 );
+            glBindBufferBase( GL_TRANSFORM_FEEDBACK_BUFFER, 0, 0 );
             glDisable( GL_RASTERIZER_DISCARD );
 
             glUseProgram( 0 );
@@ -130,8 +130,6 @@ namespace nsfw {
         void ParticleEmitter_GPU::ShaderDraw( const glm::mat4 cametaTransform, const glm::mat4 projectionView ) {
             using namespace gl;
 
-            GLuint inputBuffer = m_activeBuffer, outputBuffer = 1 - m_activeBuffer;
-
             glUseProgram( m_drawShader );
             glUniform1f( glGetUniformLocation( m_drawShader, "size_START" ), m_settings.size_START );
             glUniform1f( glGetUniformLocation( m_drawShader, "size_END" ), m_settings.size_END );
@@ -140,7 +138,7 @@ namespace nsfw {
             glUniformMatrix4fv( glGetUniformLocation( m_drawShader, "cametaTransform" ), 1, GL_FALSE, glm::value_ptr( cametaTransform ) );
             glUniformMatrix4fv( glGetUniformLocation( m_drawShader, "projectionView" ), 1, GL_FALSE, glm::value_ptr( projectionView ) );
 
-            glBindVertexArray( m_activeBuffer );
+            glBindVertexArray( m_vao[m_activeBuffer] );
             glDrawArrays( GL_POINTS, 0, MAX_PARTICLES );
 
             glUseProgram( 0 );

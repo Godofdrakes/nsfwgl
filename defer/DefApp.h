@@ -8,6 +8,7 @@
 #include "RenderPass_GlobalDirectionalLight.h"
 #include "RenderPass_PointLight.h"
 #include "RenderPass_ShadowMap.h"
+#include "ParticleEmitter_GPU.h"
 
 namespace nsfw {
     namespace application {
@@ -22,7 +23,7 @@ namespace nsfw {
             rendering::RenderPass_Composite* m_compositePass;
             rendering::RenderPass_ShadowMap* m_shadowShader;
 
-            particles::ParticleEmitter* m_particleEmitter;
+            particles::ParticleEmitter_GPU* m_particleEmitterGpu;
 
         public:
             virtual void onInit() override;

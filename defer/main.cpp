@@ -104,17 +104,8 @@ namespace nsfw {
             m_compositePass = new rendering::RenderPass_Composite( "CompositeShader", "Screen" ); // Screen is defined in nsfw::Assets::init()
             m_shadowShader = new rendering::RenderPass_ShadowMap( "ShadowShader", "ShadowFBO" );
 
-            m_particleEmitter = new particles::ParticleEmitter();
-
-            m_particleEmitter->settings = particles::Particle( glm::vec3( 0.0f ),
-                                                               glm::vec3( 0.0f, 0.0f, 1.0f ),
-                                                               0.5f,
-                                                               0.0f,
-                                                               glm::vec4( 0.0f, 1.0f, 0.0f, 1.0f ),
-                                                               glm::vec4( 1.0f, 0.0f, 0.0f, 1.0f ),
-                                                               glm::vec3( 0.50f ),
-                                                               glm::vec3( 0.25f ),
-                                                               1.0f );
+            m_particleEmitterGpu = new particles::ParticleEmitter_GPU();
+            m_particleEmitterGpu->Init();
 
         }
 
@@ -124,28 +115,15 @@ namespace nsfw {
                                                                  m_directional->Position.y,
                                                                  m_directional->Position.z ) );
 
-            static bool emit = false;
-            // Space Bar
-            if ( Window::instance().getKey( 32 ) == true && emit == false ) {
-                m_particleEmitter->settings.direction = glm::normalize( glm::ballRand( 1.0f ) + glm::vec3( 0.0f, 0.0f, 5.0f ) );
-                m_particleEmitter->Emit();
-                emit = true;
-            }
-            else if ( Window::instance().getKey( 32 ) == false && emit == true ) {
-                emit = false;
-            }
-
-            m_particleEmitter->Update();
-
             m_camera->Update();
             m_soulspear->Update();
 
             m_geometryPass->prep();
-            m_geometryPass->draw( *m_camera, m_soulspear[0] );
-            m_geometryPass->draw( *m_camera, m_soulspear[1] );
-            m_geometryPass->draw( *m_camera, m_soulspear[2] );
-            m_geometryPass->draw( *m_camera, m_soulspear[3] );
-            m_geometryPass->draw( *m_camera, *m_particleEmitter );
+            m_geometryPass->draw(*m_camera, m_soulspear[0]);
+            m_geometryPass->draw(*m_camera, m_soulspear[1]);
+            m_geometryPass->draw(*m_camera, m_soulspear[2]);
+            m_geometryPass->draw(*m_camera, m_soulspear[3]);
+            m_particleEmitterGpu->Draw( Window::instance().GetDeltaTime(), Window::instance().getTime(), m_camera->GetWorldTransform(), m_camera->GetProjection() * m_camera->GetViewTransform() );
             m_geometryPass->post();
 
             m_shadowShader->prep();
@@ -173,7 +151,7 @@ namespace nsfw {
             delete m_geometryPass;
             delete m_directionalLightPass;
 
-            delete m_particleEmitter;
+            delete m_particleEmitterGpu;
         }
     }
 }

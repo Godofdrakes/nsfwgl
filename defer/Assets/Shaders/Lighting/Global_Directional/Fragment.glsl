@@ -29,20 +29,24 @@ void main() {
     float specularLightPower = texture( uPositionTexture, vTexCoord ).w;
     vec4 vShadowCoord = uLightMatrix * inverse( uCameraView ) * vec4( position, 1 );
 
-    // Diffuse Lighting
-    vec3 lightDirection = ( uCameraView * vec4( uDirectionalLight.direction, 0 ) ).xyz;
-    float diffuseLight = max( dot( normal, lightDirection ), 0 );
-    if( uEnableShadows ) {
-        if( texture( uShadowMap, vShadowCoord.xy ).r < vShadowCoord.z - uShadowBias ) { diffuseLight = 0; }
+    if( specularLightPower <= -1.0 ) {
+        LightOutput = uDirectionalLight.color;
+    } else {
+        // Diffuse Lighting
+        vec3 lightDirection = ( uCameraView * vec4( uDirectionalLight.direction, 0 ) ).xyz;
+        float diffuseLight = max( dot( normal, lightDirection ), 0 );
+        if( uEnableShadows ) {
+            if( texture( uShadowMap, vShadowCoord.xy ).r < vShadowCoord.z - uShadowBias ) { diffuseLight = 0; }
+        }
+        vec3 diffuseColor = uDirectionalLight.color * diffuseLight;
+
+        // Specular lighting
+    	vec3 viewPointDirection = normalize(uCameraPosition - position);
+    	vec3 halfVector = normalize(lightDirection + viewPointDirection);
+    	float specularLight = pow(max(dot(normal, halfVector), 0), specularLightPower);
+    	if (diffuseLight <= 0) { specularLight = 0; }
+    	vec3 specularColor = uDirectionalLight.color * specularLight;
+
+        LightOutput = uAmbientLightColor + diffuseColor + specularColor;
     }
-    vec3 diffuseColor = uDirectionalLight.color * diffuseLight;
-
-    // Specular lighting
-	vec3 viewPointDirection = normalize(uCameraPosition - position);
-	vec3 halfVector = normalize(lightDirection + viewPointDirection);
-	float specularLight = pow(max(dot(normal, halfVector), 0), specularLightPower);
-	if (diffuseLight <= 0) { specularLight = 0; }
-	vec3 specularColor = uDirectionalLight.color * specularLight;
-
-    LightOutput = uAmbientLightColor + diffuseColor + specularColor;
 }

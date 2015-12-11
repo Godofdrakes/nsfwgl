@@ -8,6 +8,7 @@ in float lifeTime[];
 in float lifeSpan[];
 
 out vec4 Color;
+out vec4 Normal;
 
 uniform mat4 cametaTransform;
 uniform mat4 projectionView;
@@ -32,6 +33,7 @@ void main() {
     vec3 zAxis = normalize( cametaTransform[3].xyz - position[0] );
     vec3 xAxis = cross( cametaTransform[1].xyz, zAxis );
     vec3 yAxis = cross( zAxis, xAxis );
+    Normal = vec4( zAxis, 0 );
     mat3 billboard = mat3( xAxis, yAxis, zAxis );
 
     for( int n = 0; n < 4; ++n ) {

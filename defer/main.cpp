@@ -86,7 +86,7 @@ namespace nsfw {
             m_soulspear[2].diffuse = "soulspear_diffuse.tga";
             m_soulspear[2].normal = "soulspear_normal.tga";
             m_soulspear[2].specular = "soulspear_specular.tga";
-            m_soulspear[2].specPower = 0.0f;
+            m_soulspear[2].specPower = 128.0f;
             m_soulspear[2].Position = glm::vec3( -5, -1, 0 );
 
             m_soulspear[3].mesh = "Quad";
